@@ -24,11 +24,13 @@ A full-stack study planning web app built with **Vue 3** (frontend) and **Expres
 │       │   └── main.css         ← Global CSS with Tailwind @tailwind directives
 │       ├── api/
 │       │   └── index.js         ← Pre-configured Axios instance with JWT interceptors
-│       └── stores/
-│           └── index.js         ← Pinia store hub (commented example included)
+│       ├── stores/
+│       │   └── index.js         ← Pinia store hub (commented example included)
+│       └── example.test.js      ← Vitest example (run with 'npm test')
 │
 ├── server/                      ← Backend (Express.js + SQLite)
 │   ├── package.json             ← Backend dependencies and npm scripts
+│   ├── index.test.js            ← Vitest example (run with 'npm test')
 │   ├── .env.example             ← Template for your private .env configuration file
 │   ├── index.js                 ← Express entry point: middleware, routes, server start
 │   ├── routes/
@@ -112,6 +114,33 @@ npm run dev
 
 ---
 
+## Running Tests
+
+We use **Vitest** for both the frontend and backend.
+
+### Run all tests
+```bash
+# From the repository root:
+npm test
+```
+
+### Run only frontend or backend tests
+```bash
+# From the repository root:
+npm run test:client
+npm run test:server
+```
+
+### Watch mode
+You can also run tests in watch mode by going into the respective directory:
+```bash
+cd client && npm test
+# OR
+cd server && npm test
+```
+
+---
+
 ## Available Scripts
 
 | Command                  | Where to run | What it does                                         |
@@ -124,6 +153,11 @@ npm run dev
 | `npm run preview`        | `/client`    | Previews the production build locally                 |
 | `npm run dev`            | `/server`    | Starts Express with auto-restart on file changes      |
 | `npm start`              | `/server`    | Starts Express normally (for production)              |
+| `npm test`               | Root `/`     | Runs all client and server tests                     |
+| `npm run test:client`    | Root `/`     | Runs only frontend tests                              |
+| `npm run test:server`    | Root `/`     | Runs only backend tests                               |
+| `npm test`               | `/client`    | Runs frontend tests in watch mode                    |
+| `npm test`               | `/server`    | Runs backend tests in watch mode                     |
 
 ---
 
@@ -143,3 +177,4 @@ npm run dev
 | Backend   | node-cron                     | Schedules recurring background tasks          |
 | Backend   | dotenv                        | Loads .env secrets into process.env           |
 | Tooling   | concurrently                  | Runs client + server in one terminal          |
+| Tooling   | Vitest                        | Unit and integration testing                  |

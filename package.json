@@ -16,7 +16,10 @@
   "scripts": {
     "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
     "dev:client": "npm run dev --prefix client",
-    "dev:server": "npm run dev --prefix server"
+    "dev:server": "npm run dev --prefix server",
+    "test": "concurrently \"npm run test:client\" \"npm run test:server\"",
+    "test:client": "npm test --prefix client",
+    "test:server": "npm test --prefix server"
   },
   "devDependencies": {
     "concurrently": "^9.0.1"
