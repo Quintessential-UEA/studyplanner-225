@@ -1,0 +1,45 @@
+# ─── Node & Build Outputs ──────────────────────────────────────────────────────
+# "node_modules/" is the folder where npm installs all third-party packages.
+# It can contain thousands of files and be hundreds of MB! Everyone generates
+# their own copy by running "npm install", so it never belongs in the repo.
+node_modules/
+
+# "dist/" is the folder Vite (the build tool) outputs to when you run
+# "npm run build". It contains the compiled, production-ready frontend files.
+# Like node_modules, everyone generates this themselves.
+dist/
+
+# ─── Database ──────────────────────────────────────────────────────────────────
+# SQLite stores all database data in a single local file ending in .sqlite,
+# .sqlite3, or .db. Each developer has their own local copy. We never want
+# to commit someone's personal database data to the shared repo.
+*.sqlite
+*.sqlite3
+*.db
+
+# ─── Environment Variables ─────────────────────────────────────────────────────
+# ".env" files hold secret configuration values (passwords, API keys, etc.)
+# that must NEVER be shared or committed. Each of us will copy .env.example
+# and fill in our own values locally.
+#
+# The "!" prefix means "UN-ignore this" — so .env.example IS tracked (it
+# contains only placeholder text, no real secrets).
+.env
+.env.*
+!.env.example
+
+# ─── macOS System Files ────────────────────────────────────────────────────────
+# macOS creates ".DS_Store" files in every folder to store Finder view
+# preferences (icon positions, window sizes, etc.). They are irrelevant to
+# code and should never be committed!
+.DS_Store
+
+# ─── IDE/Editor Configuration ─────────────────────────────────────────────────
+# Your editor configfolders (.vscode for VS Code, .idea for JetBrains) are
+# personal and should not pollute the shared repo.
+.vscode/
+.idea/
+
+# ".swp" files are temporary swap files created by the Vim text editor when
+# a file is open for editing. They are safe to ignore.
+*.swp

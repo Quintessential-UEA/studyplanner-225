@@ -1,0 +1,24 @@
+{
+  "//": [
+    "─── Root package.json ────────────────────────────────────────────────────────",
+    "This root-level package.json does NOT manage the client or server packages.",
+    "Its sole purpose is to provide convenience scripts that run BOTH the client",
+    "and server at the same time using the 'concurrently' package.",
+    "",
+    "You still need to run 'npm install' inside /client and /server separately.",
+    "",
+    "─── Dependency Explanations ────────────────────────────────────────────────",
+    "• concurrently: Lets you run multiple npm scripts at the same time."
+  ],
+  "name": "study-planner",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "npm run dev --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}

@@ -1,0 +1,46 @@
+<!doctype html>
+<!--
+  ─── index.html ─────────────────────────────────────────────────────────────
+  This is the single HTML file that the entire Vue application lives inside.
+  It's the "entry point" for the frontend.
+
+  Vite serves this file when you visit http://localhost:5173.
+  Vue then takes over the page and renders everything dynamically inside the
+  <div id="app"> element below, we rarely need to edit this file directly.
+  ────────────────────────────────────────────────────────────────────────────
+-->
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- Tells mobile browsers not to zoom out; makes the app look correct on phones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO: Shown as the browser tab title and in Google search results -->
+  <title>Study Planner | Quintessential</title>
+
+  <!-- SEO: Short description shown in search engine result snippets -->
+  <meta name="description" content="A study planner for managing modules, assessments, tasks, and activities." />
+</head>
+
+<body>
+  <!--
+      ─── App Mount Point ──────────────────────────────────────────────────────
+      This empty div is where Vue mounts the entire application.
+      In src/main.js, Vue is told to render <App /> inside this element.
+      After Vue starts, this div is filled with whatever your App.vue renders.
+    -->
+  <div id="app"></div>
+
+  <!--
+      ─── Module Script ────────────────────────────────────────────────────────
+      This loads the Vue app's JavaScript entry point (src/main.js).
+      Vite processes this import automatically. It handles bundling,
+      transpiling, and hot-module replacement during development.
+      type="module" is required for modern ES Module syntax (import/export).
+    -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+/* ─── src/assets/main.css ──────────────────────────────────────────────────────
+   This is the global CSS file for the entire app. It is imported once in
+   src/main.js and its styles apply everywhere.
+
+   The three @tailwind directives below are NOT standard CSS — Tailwind's
+   PostCSS plugin replaces them at build time with the actual generated CSS.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Injects Tailwind's base/reset styles (similar to normalize.css).
+   Removes browser default margins, sets box-sizing, etc. */
+@tailwind base;
+
+/* Injects all the Tailwind utility classes you've used in your templates
+   (e.g. 'text-center', 'p-4', 'flex', 'bg-blue-500'). */
+@tailwind components;
+
+/* Injects Tailwind's component classes and any custom utilities you define. */
+@tailwind utilities;
+
+/* ─── Global Custom Styles ──────────────────────────────────────────────────── */
+/* Add any global CSS rules below that Tailwind's utilities can't cover.
+   For example: custom fonts, CSS variables for your design tokens, etc. */

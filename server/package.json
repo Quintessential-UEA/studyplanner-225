@@ -1,0 +1,36 @@
+{
+  "//": [
+    "─── What is package.json? ──────────────────────────────────────────────────",
+    "This is the manifest file for the SERVER side of the app (the Express backend).",
+    "npm reads this file to know the project's name, what commands to run,",
+    "and what third-party packages to download.",
+    "",
+    "When we run 'npm install', npm reads this file and downloads everything",
+    "listed here into the local 'node_modules/' folder.",
+    "",
+    "─── Dependency Explanations ────────────────────────────────────────────────",
+    "better-sqlite3: Library for reading and writing to the SQLite database file.",
+    "dotenv: Loads variables from '.env' into process.env.",
+    "express: Web framework for the backend API.",
+    "multer: Middleware for handling file uploads (multipart/form-data).",
+    "node-cron: Schedules functions to run at set times.",
+    "nodemailer: Library for sending emails."
+  ],
+  "name": "study-planner-server",
+  "version": "1.0.0",
+  "description": "Backend API for Study Planner (Team 225 | Quintessential)",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.5.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "multer": "^1.4.5-lts.1",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.16"
+  }
+}

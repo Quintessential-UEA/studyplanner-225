@@ -1,0 +1,44 @@
+{
+  "//": [
+    "─── What is package.json? ──────────────────────────────────────────────────",
+    "This is the manifest file for the CLIENT side of the app (the Vue frontend).",
+    "npm reads this file to know:",
+    "  • The project's name and version",
+    "  • What commands to run (scripts)",
+    "  • What third-party packages to download (dependencies / devDependencies)",
+    "",
+    "When you run 'npm install', npm reads this file and downloads everything",
+    "listed here into the local 'node_modules/' folder.",
+    "",
+    "─── Dependency Explanations ────────────────────────────────────────────────",
+    "• axios: HTTP client library — used to make API requests to the backend.",
+    "• pinia: State management library for Vue — holds shared app data.",
+    "• vue: The core Vue 3 framework UI library.",
+    "• @vitejs/plugin-vue: Tells Vite how to handle .vue components.",
+    "• autoprefixer: Automatically adds browser vendor prefixes to CSS.",
+    "• postcss: Tool that transforms CSS (needed by Tailwind).",
+    "• tailwindcss: Utility-first CSS framework.",
+    "• vite: The build tool and development server."
+  ],
+  "name": "study-planner-client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "pinia": "^2.3.0",
+    "vue": "^3.5.12"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.1.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.14",
+    "vite": "^5.4.10"
+  }
+}
