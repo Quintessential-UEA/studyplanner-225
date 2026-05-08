@@ -21,10 +21,12 @@
     <h1 class="text-2xl font-bold text-center p-8">
       Study Planner — Quintessential
     </h1>
-    <p class="text-center text-gray-500">
-      {{status}}
-    </p>
-    <button class="text-center" @click="upload()">Upload Hub File</button>
+    <section class ="items-center max-w-md mx-auto bg-sky-300 rounded-md p-8 shadow-lg">
+      <p class="text-center mb-8">
+        {{status}}
+      </p>
+      <button class="text-gray-500 size-96 bg-sky-200 rounded-md" @click="upload()">Upload Hub File</button>
+    </section>
   </div>
 </template>
 
