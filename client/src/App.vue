@@ -21,11 +21,12 @@
     <h1 class="text-2xl font-bold text-center p-8">
       Study Planner — Quintessential
     </h1>
-    <section class ="items-center max-w-md mx-auto bg-sky-300 rounded-md p-8 shadow-lg">
+    <section class ="items-center max-w-lg mx-auto bg-sky-300 rounded-md p-8 shadow-lg">
+      <button class="top-0 right-0 text-gray-500 bg-sky-200 rounded-md px-1" @click="close()">x</button>
       <p class="text-center mb-8">
-        {{status}}
+        {{status_message}}
       </p>
-      <button class="text-gray-500 size-96 bg-sky-200 rounded-md" @click="upload()">Upload Hub File</button>
+      <button class="text-gray-500 size-full bg-sky-200 rounded-md mx-auto" @click="upload()">Upload Hub File</button>
     </section>
   </div>
 </template>
@@ -40,10 +41,15 @@
 // import { useUserStore } from './stores/user'
 // const userStore = useUserStore()
 
-var status = "User currently logged out. Upload Hub File to log in."
+const status_message = "User currently logged out. Upload Hub File to log in."
 
+// button things. someone else implement these please i am a shambling corpse of a hollowed-out husk
 function upload(){
-  status = "Hub Upload Successful!"
+  status_message = "Hub Upload Successful!"
+}
+
+function close(){
+  status_message = "this should close this dialog"
 }
 
 </script>
