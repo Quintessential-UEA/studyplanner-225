@@ -1,0 +1,633 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Hub Import File",
+    "description": "File format for temporarily importing student module and assessment data into the Study Planner web application",
+    "type": "object",
+    "required": [
+        "file_metadata",
+        "student",
+        "modules"
+    ],
+    "properties": {
+        "file_metadata": {
+            "type": "object",
+            "required": [
+                "version",
+                "generated_at",
+                "academic_year",
+                "semester"
+            ],
+            "properties": {
+                "version": {
+                    "type": "string",
+                    "description": "Schema version for compatibility checking",
+                    "pattern": "^\\d+\\.\\d+\\.\\d+$",
+                    "example": "1.0.0"
+                },
+                "generated_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "ISO 8601 timestamp when file was generated"
+                },
+                "academic_year": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{4}$",
+                    "description": "Academic year in format YYYY-YYYY",
+                    "example": "2025-2026"
+                },
+                "semester": {
+                    "type": "string",
+                    "enum": [
+                        "1",
+                        "2",
+                        "year_long"
+                    ],
+                    "description": "Which semester this file covers"
+                },
+                "file_hash": {
+                    "type": "string",
+                    "description": "SHA-256 hash of file content for duplicate detection"
+                }
+            }
+        },
+        "student": {
+            "type": "object",
+            "required": [
+                "student_number",
+                "name",
+                "email",
+                "school",
+                "programme",
+                "year_of_study"
+            ],
+            "properties": {
+                "student_number": {
+                    "type": "string",
+                    "pattern": "^\\d{9}$",
+                    "description": "9-digit UEA student number",
+                    "example": "100430054"
+                },
+                "name": {
+                    "type": "object",
+                    "required": [
+                        "full_name"
+                    ],
+                    "properties": {
+                        "full_name": {
+                            "type": "string",
+                            "description": "Student's full legal name",
+                            "example": "Alex Morgan"
+                        },
+                        "preferred_name": {
+                            "type": "string",
+                            "description": "Optional preferred name or nickname"
+                        }
+                    }
+                },
+                "email": {
+                    "type": "string",
+                    "format": "email",
+                    "pattern": ".*@uea\\.ac\\.uk$",
+                    "description": "UEA email address"
+                },
+                "school": {
+                    "type": "object",
+                    "description": "School the student belongs to",
+                    "required": ["name", "acronym"],
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "description": "Full school name",
+                            "example": "School of Computing Sciences"
+                        },
+                        "acronym": {
+                            "type": "string",
+                            "description": "School abbreviation",
+                            "example": "CMP"
+                        }
+                    }
+                },
+                "programme": {
+                    "type": "object",
+                    "required": [
+                        "code",
+                        "title"
+                    ],
+                    "properties": {
+                        "code": {
+                            "type": "string",
+                            "description": "Programme code",
+                            "example": "G407"
+                        },
+                        "title": {
+                            "type": "string",
+                            "description": "Full programme title",
+                            "example": "MComp Computing Science"
+                        }
+                    }
+                },
+                "year_of_study": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "description": "Current year of study (1-5, including placement years)"
+                },
+                "level_of_study": {
+                    "type": "string",
+                    "enum": [
+                        "4",
+                        "5",
+                        "6",
+                        "7"
+                    ],
+                    "description": "FHEQ level (4=Year 1, 5=Year 2, 6=Year 3, 7=Masters)"
+                },
+                "has_reasonable_adjustments": {
+                    "type": "boolean",
+                    "description": "Whether student has RA's"
+                },
+                "academic_advisor": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "email": {
+                            "type": "string",
+                            "format": "email"
+                        },
+                        "office": {
+                            "type": "string",
+                            "description": "Office location"
+                        }
+                    }
+                }
+            }
+        },
+        "modules": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "required": [
+                    "code",
+                    "title",
+                    "credits",
+                    "semester",
+                    "level"
+                ],
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "pattern": "^[A-Z]{3}\\d{4}[A-Z]?$",
+                        "description": "Module code",
+                        "example": "CMP5012B"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Full module title",
+                        "example": "Software Engineering"
+                    },
+                    "credits": {
+                        "type": "integer",
+                        "enum": [
+                            10,
+                            20,
+                            30,
+                            40,
+                            60
+                        ],
+                        "description": "Credit value"
+                    },
+                    "semester": {
+                        "type": "string",
+                        "enum": [
+                            "1",
+                            "2",
+                            "year_long"
+                        ],
+                        "description": "When the module runs"
+                    },
+                    "level": {
+                        "type": "string",
+                        "enum": [
+                            "4",
+                            "5",
+                            "6",
+                            "7"
+                        ],
+                        "description": "FHEQ level - indicates year module is designed for"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Module description/learning outcomes"
+                    },
+                    "module_organiser": {
+                        "type": "object",
+                        "required": [
+                            "name",
+                            "email"
+                        ],
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string",
+                                "format": "email"
+                            },
+                            "office": {
+                                "type": "string"
+                            },
+                            "office_hours": {
+                                "type": "string",
+                                "description": "e.g., 'Wednesdays 14:00-16:00'"
+                            }
+                        }
+                    },
+                    "teaching_staff": {
+                        "type": "array",
+                        "description": "Lecturers, ATs, and other teaching staff",
+                        "items": {
+                            "type": "object",
+                            "required": [
+                                "name",
+                                "role"
+                            ],
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "role": {
+                                    "type": "string",
+                                    "enum": [
+                                        "lecturer",
+                                        "teaching_fellow",
+                                        "associate_tutor",
+                                        "demonstrator",
+                                        "guest_lecturer"
+                                    ],
+                                    "description": "Staff role in the module"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "format": "email"
+                                },
+                                "responsibilities": {
+                                    "type": "string",
+                                    "description": "e.g., 'Lab sessions' or 'Lectures 1-5'"
+                                }
+                            }
+                        }
+                    },
+                    "assessments": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "type": "object",
+                            "required": [
+                                "title",
+                                "module_code",
+                                "type",
+                                "weighting",
+                                "deadline"
+                            ],
+                            "properties": {
+                                "title": {
+                                    "type": "string",
+                                    "description": "Assessment title",
+                                    "example": "Project Report"
+                                },
+                                "module_code": {
+                                    "type": "string",
+                                    "pattern": "^[A-Z]{3}\\d{4}[A-Z]?$",
+                                    "description": "Module code",
+                                    "example": "CMP5012B"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "exam",
+                                        "demo",
+                                        "submission"
+                                    ],
+                                    "description": "Type of assessment. Demo and submission are both coursework types"
+                                },
+                                "weighting": {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 100,
+                                    "description": "Percentage weighting towards final module grade. If 0%, this is formative"
+                                },
+                                "deadline": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "description": "ISO 8601 deadline (includes time)"
+                                },
+                                "submission_method": {
+                                    "type": "string",
+                                    "enum": [
+                                        "blackboard",
+                                        "physical",
+                                        "demo"
+                                    ],
+                                    "description": "How to submit"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Brief description of the assessment"
+                                },
+                                "word_limit": {
+                                    "type": "integer",
+                                    "description": "Word limit if applicable"
+                                },
+                                "file_types": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "Accepted file types for submission",
+                                    "example": [
+                                        "pdf",
+                                        "docx",
+                                        "zip"
+                                    ]
+                                },
+                                "location": {
+                                    "type": "string",
+                                    "description": "Room or building",
+                                    "example": "LT1, Queens Building"
+                                },
+                                "suggested_milestones": {
+                                    "type": "array",
+                                    "description": "Optional: milestones suggested by module organiser",
+                                    "items": {
+                                        "type": "object",
+                                        "required": [
+                                            "title",
+                                            "suggested_deadline"
+                                        ],
+                                        "properties": {
+                                            "title": {
+                                                "type": "string",
+                                                "example": "Complete literature review"
+                                            },
+                                            "suggested_deadline": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "description": "Suggested date to complete by"
+                                            },
+                                            "description": {
+                                                "type": "string"
+                                            },
+                                            "completion_percentage": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "maximum": 100,
+                                                "description": "Approximate % of assessment this represents"
+                                            }
+                                        }
+                                    }
+                                },
+                                "suggested_tasks": {
+                                    "type": "array",
+                                    "description": "Optional: tasks suggested by module organiser",
+                                    "items": {
+                                        "type": "object",
+                                        "required": [
+                                            "title",
+                                            "type"
+                                        ],
+                                        "properties": {
+                                            "title": {
+                                                "type": "string",
+                                                "example": "Read chapters 3-5 of textbook"
+                                            },
+                                            "type": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "studying",
+                                                    "programming",
+                                                    "writing",
+                                                    "reading",
+                                                    "revision",
+                                                    "practice",
+                                                    "other"
+                                                ]
+                                            },
+                                            "estimated_hours": {
+                                                "type": "number",
+                                                "description": "Estimated time to complete"
+                                            },
+                                            "description": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "events": {
+                        "type": "array",
+                        "description": "Scheduled teaching events (lectures, labs, etc.)",
+                        "items": {
+                            "type": "object",
+                            "required": [
+                                "title",
+                                "type",
+                                "start_time",
+                                "end_time",
+                                "location"
+                            ],
+                            "properties": {
+                                "title": {
+                                    "type": "string",
+                                    "example": "Lecture 1: Introduction to OOP"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "lecture",
+                                        "lab",
+                                        "seminar",
+                                        "tutorial",
+                                        "workshop",
+                                        "exam",
+                                        "other"
+                                    ]
+                                },
+                                "start_time": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "description": "ISO 8601 start date and time"
+                                },
+                                "end_time": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "description": "ISO 8601 end date and time"
+                                },
+                                "location": {
+                                    "type": "string",
+                                    "description": "Room or building",
+                                    "example": "LT1, Queens Building"
+                                },
+                                "is_recurring": {
+                                    "type": "boolean",
+                                    "description": "Whether this is a recurring event"
+                                },
+                                "recurrence_pattern": {
+                                    "type": "string",
+                                    "description": "If recurring: e.g., 'weekly', 'fortnightly'",
+                                    "enum": [
+                                        "weekly",
+                                        "fortnightly",
+                                        "monthly"
+                                    ]
+                                },
+                                "recurrence_end_date": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "description": "When recurring events end"
+                                },
+                                "teaching_staff": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "Names of staff delivering this event"
+                                },
+                                "is_mandatory": {
+                                    "type": "boolean",
+                                    "description": "Whether attendance is required"
+                                },
+                                "notes": {
+                                    "type": "string",
+                                    "description": "Additional information"
+                                }
+                            }
+                        }
+                    },
+                    "resources": {
+                        "type": "object",
+                        "description": "Learning resources for the module",
+                        "properties": {
+                            "textbooks": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "authors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "edition": {
+                                            "type": "string"
+                                        },
+                                        "isbn": {
+                                            "type": "string"
+                                        },
+                                        "is_required": {
+                                            "type": "boolean",
+                                            "description": "Whether this is required or recommended"
+                                        },
+                                        "library_link": {
+                                            "type": "string",
+                                            "format": "uri"
+                                        }
+                                    }
+                                }
+                            },
+                            "online_resources": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "url": {
+                                            "type": "string",
+                                            "format": "uri"
+                                        },
+                                        "description": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "blackboard_url": {
+                                "type": "string",
+                                "format": "uri",
+                                "description": "Direct link to module on Blackboard"
+                            }
+                        }
+                    },
+                    "background_information": {
+                        "type": "object",
+                        "description": "Additional context about the module",
+                        "properties": {
+                            "prerequisites": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "Module codes of prerequisites",
+                                "example": [
+                                    "CMP2020M",
+                                    "CMP2040B"
+                                ]
+                            },
+                            "co_requisites": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "Modules that should be taken alongside"
+                            },
+                            "topics_covered": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "Key topics/themes",
+                                "example": [
+                                    "Object-Oriented Programming",
+                                    "Design Patterns",
+                                    "Agile Methods"
+                                ]
+                            },
+                            "learning_outcomes": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "What students should be able to do after completing"
+                            },
+                            "study_hours": {
+                                "type": "object",
+                                "description": "Breakdown of expected study time",
+                                "properties": {
+                                    "lectures": {
+                                        "type": "number"
+                                    },
+                                    "labs": {
+                                        "type": "number"
+                                    },
+                                    "independent_study": {
+                                        "type": "number"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,175 @@
+{
+    "file_metadata": {
+        "version": "1.0.0",
+        "generated_at": "2025-09-15T10:00:00Z",
+        "academic_year": "2025-2026",
+        "semester": "1",
+        "file_hash": "foo"
+    },
+    "student": {
+        "student_number": "100000000",
+        "name": {
+            "full_name": "Jane Doe",
+            "preferred_name": "foo"
+        },
+        "email": "jane.doe@uea.ac.uk",
+        "school": {
+            "name": "School of Computing Sciences",
+            "acronym": "CMP"
+        },
+        "programme": {
+            "code": "G400",
+            "title": "BSc (Hons) Computing Science"
+        },
+        "year_of_study": 1,
+        "level_of_study": "4",
+        "has_reasonable_adjustments": false,
+        "academic_advisor": {
+            "name": "foo",
+            "email": "foo@uea.ac.uk",
+            "office": "foo"
+        }
+    },
+    "modules": [
+        {
+            "code": "CMP4000A",
+            "title": "Programming I",
+            "credits": 20,
+            "semester": "1",
+            "level": "4",
+            "description": "Introduction to programming using Python",
+            "module_organiser": {
+                "name": "foo",
+                "email": "foo@uea.ac.uk",
+                "office": "foo",
+                "office_hours": "foo"
+            },
+            "teaching_staff": [
+                {
+                    "name": "foo",
+                    "role": "lecturer",
+                    "email": "foo@uea.ac.uk",
+                    "responsibilities": "foo"
+                }
+            ],
+            "assessments": [
+                {
+                    "title": "Programming Exercises",
+                    "module_code": "CMP4000A",
+                    "type": "submission",
+                    "weighting": 40,
+                    "deadline": "2025-12-15T23:59:00Z",
+                    "submission_method": "blackboard",
+                    "description": "foo",
+                    "word_limit": 0,
+                    "file_types": [
+                        "pdf"
+                    ],
+                    "location": "foo",
+                    "suggested_milestones": [
+                        {
+                            "title": "foo",
+                            "suggested_deadline": "2025-12-01",
+                            "description": "foo",
+                            "completion_percentage": 50
+                        }
+                    ],
+                    "suggested_tasks": [
+                        {
+                            "title": "foo",
+                            "type": "programming",
+                            "estimated_hours": 10,
+                            "description": "foo"
+                        }
+                    ]
+                },
+                {
+                    "title": "Final Exam",
+                    "module_code": "CMP4000A",
+                    "type": "exam",
+                    "weighting": 60,
+                    "deadline": "2026-01-20T09:00:00Z",
+                    "submission_method": "physical",
+                    "description": "foo",
+                    "word_limit": 0,
+                    "file_types": [],
+                    "location": "foo",
+                    "suggested_milestones": [
+                        {
+                            "title": "foo",
+                            "suggested_deadline": "2026-01-01",
+                            "description": "foo",
+                            "completion_percentage": 50
+                        }
+                    ],
+                    "suggested_tasks": [
+                        {
+                            "title": "foo",
+                            "type": "revision",
+                            "estimated_hours": 10,
+                            "description": "foo"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "title": "foo",
+                    "type": "lecture",
+                    "start_time": "2025-09-15T10:00:00Z",
+                    "end_time": "2025-09-15T11:00:00Z",
+                    "location": "foo",
+                    "is_recurring": true,
+                    "recurrence_pattern": "weekly",
+                    "recurrence_end_date": "2025-12-15",
+                    "teaching_staff": [
+                        "foo"
+                    ],
+                    "is_mandatory": false,
+                    "notes": "foo"
+                }
+            ],
+            "resources": {
+                "textbooks": [
+                    {
+                        "title": "foo",
+                        "authors": [
+                            "foo"
+                        ],
+                        "edition": "foo",
+                        "isbn": "foo",
+                        "is_required": true,
+                        "library_link": "https://foo.com"
+                    }
+                ],
+                "online_resources": [
+                    {
+                        "title": "foo",
+                        "url": "https://foo.com",
+                        "description": "foo"
+                    }
+                ],
+                "blackboard_url": "https://foo.com"
+            },
+            "background_information": {
+                "prerequisites": [
+                    "foo"
+                ],
+                "co_requisites": [
+                    "foo"
+                ],
+                "topics_covered": [
+                    "foo"
+                ],
+                "learning_outcomes": [
+                    "foo"
+                ],
+                "study_hours": {
+                    "lectures": 0,
+                    "labs": 0,
+                    "independent_study": 0
+                }
+            }
+        }
+    ]
+}
