@@ -22,8 +22,9 @@
       Study Planner — Quintessential
     </h1>
     <p class="text-center text-gray-500">
-      Frontend is running.
+      {{status}}
     </p>
+    <button class="text-center" @click="upload()">Upload Hub File</button>
   </div>
 </template>
 
@@ -36,4 +37,11 @@
 // Example: import and use a Pinia store
 // import { useUserStore } from './stores/user'
 // const userStore = useUserStore()
+
+var status = "User currently logged out. Upload Hub File to log in."
+
+function upload(){
+  status = "Hub Upload Successful!"
+}
+
 </script>
