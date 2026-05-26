@@ -1,52 +1,41 @@
 // ─── server/routes/index.js ───────────────────────────────────────────────────
-// This is the central API router. It groups all sub-routers together and
-// mounts them at their respective path prefixes.
+// Central API router. All sub-routers are mounted here at their path prefixes.
 //
-// ─── How Express Routing Works ────────────────────────────────────────────────
-// express.Router() creates a mini-application that handles a subset of routes.
-// In server/index.js, this entire router is mounted at '/api', so:
-//
-//   router.use('/tasks',      taskRoutes)   →  accessible at  GET /api/tasks
-//   router.use('/activities', activityRoutes) →  accessible at GET /api/activities
-//   etc.
-//
-// ─── Adding New Route Groups ──────────────────────────────────────────────────
-// 1. Create a new file: server/routes/myFeature.js
-// 2. Define your routes in it using express.Router()
-// 3. Import it here and add: router.use('/myFeature', myFeatureRoutes)
+// In server/index.js this entire router is mounted at '/api', so:
+//   moduleRoutes    GET /api/modules, GET /api/modules/:code, etc.
+//   assessRoutes    GET /api/assessments, GET /api/assessments/:id
+//   taskRoutes      GET/POST /api/tasks, PUT/PATCH/DELETE /api/tasks/:id
+//   activityRoutes  GET/POST /api/activities, DELETE /api/activities/:id
+//   eventRoutes     GET /api/events
+//   userRoutes      GET /api/user/profile
 // ──────────────────────────────────────────────────────────────────────────────
 
 import express from 'express'
 
-// Import individual route group files (create these as we build each feature)
-// EXAMPLES:
-//   import semesterRoutes  from './semesters.js'
-//   import taskRoutes      from './tasks.js'
-//   import activityRoutes  from './activities.js'
-//   import dashboardRoutes from './dashboard.js'
+// Import route groups
+import moduleRoutes from './modules.js'
+import assessmentRoutes from './assessments.js'
+import { taskRouter, activityRouter } from './tasks.js'
+import eventRoutes from './events.js'
+import userRoutes from './user.js'
+import userEventRoutes from './user_events.js'
+import calendarRoutes from './calendar.js'
 
 const router = express.Router()
 
-// ─── Placeholder Health Check ────────────────────────────────────────────────
-// Returns a simple JSON response confirming the /api prefix is reachable.
-// Replace this with real routes as we build them.
+// ─── Health Check ────────────────────────────────────────────────────────────
 router.get('/', (req, res) => {
-  res.json({
-    message: 'API router is live',
-    availableEndpoints: [
-      'GET  /api/semesters/:id/modules',
-      'POST /api/tasks  |  GET/PUT/DELETE /api/tasks/:id',
-      'POST /api/activities  |  GET/PUT/DELETE /api/activities/:id',
-      'GET  /api/dashboard/summary',
-    ],
-  })
+  res.json({ message: 'API router is live' })
 })
 
 // ─── Route Mounts ────────────────────────────────────────────────────────────
-// Uncomment OR add new lines as we create the corresponding route file:
-// router.use('/semesters',  semesterRoutes)
-// router.use('/tasks',      taskRoutes)
-// router.use('/activities', activityRoutes)
-// router.use('/dashboard',  dashboardRoutes)
+router.use('/modules', moduleRoutes)
+router.use('/assessments', assessmentRoutes)
+router.use('/tasks', taskRouter)
+router.use('/activities', activityRouter)
+router.use('/events', eventRoutes)
+router.use('/user', userRoutes)
+router.use('/user-events', userEventRoutes)
+router.use('/calendar', calendarRoutes)
 
 export default router

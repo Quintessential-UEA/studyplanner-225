@@ -1,39 +1,93 @@
-<!--
-  ─── src/App.vue ──────────────────────────────────────────────────────────────
-  This is the ROOT component — the outermost wrapper of the entire application.
-  Every other component (NavBar, Dashboard, TaskList, etc.) will eventually
-  be nested somewhere inside this one.
-
-  A Vue Single File Component (SFC) has up to three sections:
-    <template> — the HTML structure to render
-    <script>   — the JavaScript logic
-    <style>    — component-scoped CSS (optional)
-  ────────────────────────────────────────────────────────────────────────────
--->
-
 <template>
-  <!--
-    This is the root element of the application.
-    As you build out the app, you'll replace this placeholder content with
-    your router view (<RouterView />) or layout components.
-  -->
-  <div id="app-root">
-    <h1 class="text-2xl font-bold text-center p-8">
-      Study Planner — Quintessential
-    </h1>
-    <p class="text-center text-gray-500">
-      Frontend is running.
-    </p>
+  <div id="app-root" class="min-h-screen bg-canvas text-body font-sans overflow-x-hidden flex">
+
+    <!-- Sidebar Navigation -->
+    <NavBar v-if="nav.currentView !== 'Login'" />
+
+    <!-- Spacer to reserve space for fixed navbar -->
+    <div
+      v-if="nav.currentView !== 'Login'"
+      class="h-screen transition-all duration-300 ease-in-out shrink-0"
+      :class="nav.isExpanded ? 'w-64' : 'w-20'"
+    ></div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 relative overflow-y-auto">
+      <Transition :name="transitionName" mode="out-in">
+        <component :is="activeComponent" :key="nav.currentView" />
+      </Transition>
+    </main>
+
   </div>
 </template>
 
 <script setup>
-// ─── <script setup> ──────────────────────────────────────────────────────────
-// 'setup' is the modern Composition API syntax for Vue 3.
-// Variables and functions declared here are automatically available in <template>.
-// No need to return them from a setup() function.
+import { computed } from 'vue'
+import { useNavigationStore } from './stores/navigation'
+import { useThemeStore } from './stores/theme'
 
-// Example: import and use a Pinia store
-// import { useUserStore } from './stores/user'
-// const userStore = useUserStore()
+// Import components
+import NavBar from './components/NavBar.vue'
+
+// Import all views
+import LoginView from './views/LoginView.vue'
+import DashboardView from './views/DashboardView.vue'
+import SettingsView from './views/SettingsView.vue'
+import SemesterView from './views/SemesterView.vue'
+import ModuleView from './views/ModuleView.vue'
+import CalendarView from './views/CalendarView.vue'
+import TaskInboxView from './views/TaskInboxView.vue'
+
+const views = {
+  Login: LoginView,
+  Dashboard: DashboardView,
+  Settings: SettingsView,
+  Semester: SemesterView,
+  Module: ModuleView,
+  Calendar: CalendarView,
+  TaskInbox: TaskInboxView
+}
+
+const nav = useNavigationStore()
+// Init theme store (applies dark class and OS preference on first load)
+useThemeStore()
+
+const activeComponent = computed(() => {
+  return views[nav.currentView] || LoginView
+})
+
+const transitionName = computed(() => {
+  if (!nav.enableTransitions) return ''
+  return nav.transitionDirection === 'forward' ? 'slide-left' : 'slide-right'
+})
 </script>
+
+<style>
+/* Base transitions */
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Slide Left (Forward) */
+.slide-left-enter-from {
+  opacity: 0;
+  transform: translateX(30px);
+}
+.slide-left-leave-to {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+/* Slide Right (Backward) */
+.slide-right-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+.slide-right-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+</style>

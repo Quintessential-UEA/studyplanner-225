@@ -4,6 +4,16 @@
 // These tests create an in-memory SQLite database, run the same CREATE TABLE
 // statements from migrate.js, and verify the schema is correct.
 //
+// Test suites:
+//   - Table Creation:       All expected tables exist, migration is idempotent
+//   - Foreign Keys:         FK constraints reject invalid references
+//   - CASCADE Deletes:      Deleting parents correctly removes/nullifies children
+//   - UNIQUE & NOT NULL:    Uniqueness and required-field constraints
+//   - CHECK Constraints:    Enum/range checks on columns
+//   - Module Organisers:    MO ↔ module relationship and SET NULL behaviour
+//   - Event Staff:          Event ↔ staff junction table and cascade
+//   - Weekly Topics:        Week schedule tables, UNIQUE(module,week), cascade
+//
 // Usage:
 //   npx vitest run db/migrate.test.js
 // ──────────────────────────────────────────────────────────────────────────────
@@ -17,8 +27,9 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // ─── Helper: extract the SQL from migrate.js ─────────────────────────────────
-// We read migrate.js as text to pull out the CREATE and DROP SQL blocks,
-// then replay them against an in-memory database.
+// We read migrate.js as text and use regex to pull out the DROP and CREATE SQL
+// blocks (wrapped in template literals), then replay them against an in-memory
+// database. This keeps the tests in sync with migrate.js without duplicating SQL.
 function buildTestDb() {
   const db = new Database(':memory:')
   db.pragma('foreign_keys = ON')
@@ -26,11 +37,13 @@ function buildTestDb() {
   // Read the migrate.js source to extract the SQL template literals
   const src = readFileSync(path.join(__dirname, 'migrate.js'), 'utf8')
 
-  // Extract the DROP block
+  // Extract the DROP block (everything inside the db.exec(`...`) after the
+  // "Drop existing tables" comment)
   const dropMatch = src.match(/\/\/ Drop existing tables[\s\S]*?db\.exec\(`([\s\S]*?)`\)/)
   if (dropMatch) db.exec(dropMatch[1])
 
-  // Extract the CREATE block
+  // Extract the CREATE block (everything inside the db.exec(`...`) after the
+  // "Create tables" comment)
   const createMatch = src.match(/\/\/ Create tables\s*\ndb\.exec\(`([\s\S]*?)`\)/)
   if (createMatch) db.exec(createMatch[1])
 
@@ -38,6 +51,8 @@ function buildTestDb() {
 }
 
 // ─── Expected tables ─────────────────────────────────────────────────────────
+// This list must exactly match the tables created by migrate.js.
+// If you add a new CREATE TABLE in migrate.js, add it here too.
 const EXPECTED_TABLES = [
   'users',
   'student_profiles',
@@ -61,6 +76,8 @@ const EXPECTED_TABLES = [
   'event_staff',
   'resources',
   'resource_authors',
+  'weekly_topics',
+  'weekly_topic_subtopics',
 ]
 
 // ─── Test Suite ──────────────────────────────────────────────────────────────
@@ -440,5 +457,79 @@ describe('Migration: Event Staff', () => {
 
     const rows = db.prepare(`SELECT * FROM event_staff WHERE event_id = ?`).all(eventId)
     expect(rows).toHaveLength(0)
+  })
+})
+
+// ─── Weekly Topics ───────────────────────────────────────────────────────────
+// Tests for the weekly_topics and weekly_topic_subtopics tables, including
+// FK enforcement, the UNIQUE(module_code, week) constraint, the CHECK on
+// week >= 1, and cascade delete from module → weekly_topics → subtopics.
+
+describe('Migration: Weekly Topics', () => {
+  let db
+
+  beforeAll(() => {
+    db = buildTestDb()
+    db.prepare(`INSERT INTO modules (code, title, credits, semester, level) VALUES ('WT0001', 'Weekly Test', 20, '1', '4')`).run()
+  })
+
+  afterAll(() => {
+    db.close()
+  })
+
+  it('weekly_topics table exists with correct columns', () => {
+    const cols = db.prepare(`PRAGMA table_info(weekly_topics)`).all().map(c => c.name)
+    expect(cols).toEqual(expect.arrayContaining(['id', 'module_code', 'week', 'week_start_date', 'topic', 'reading', 'notes']))
+  })
+
+  it('weekly_topic_subtopics table exists with correct columns', () => {
+    const cols = db.prepare(`PRAGMA table_info(weekly_topic_subtopics)`).all().map(c => c.name)
+    expect(cols).toEqual(expect.arrayContaining(['weekly_topic_id', 'position', 'subtopic']))
+  })
+
+  it('can insert a weekly topic with subtopics', () => {
+    db.prepare(`INSERT INTO weekly_topics (module_code, week, week_start_date, topic, reading, notes) VALUES ('WT0001', 1, '2026-01-26', 'Intro', 'Ch 1', 'First week')`).run()
+    const wt = db.prepare(`SELECT * FROM weekly_topics WHERE module_code = 'WT0001' AND week = 1`).get()
+    expect(wt).toBeTruthy()
+    expect(wt.topic).toBe('Intro')
+
+    db.prepare(`INSERT INTO weekly_topic_subtopics (weekly_topic_id, position, subtopic) VALUES (?, 1, 'Sub A')`).run(wt.id)
+    db.prepare(`INSERT INTO weekly_topic_subtopics (weekly_topic_id, position, subtopic) VALUES (?, 2, 'Sub B')`).run(wt.id)
+
+    const subs = db.prepare(`SELECT * FROM weekly_topic_subtopics WHERE weekly_topic_id = ?`).all(wt.id)
+    expect(subs).toHaveLength(2)
+  })
+
+  it('rejects duplicate (module_code, week) pair', () => {
+    // Week 1 for WT0001 was already inserted above
+    expect(() => {
+      db.prepare(`INSERT INTO weekly_topics (module_code, week, topic) VALUES ('WT0001', 1, 'Duplicate week')`).run()
+    }).toThrow()
+  })
+
+  it('rejects week < 1', () => {
+    expect(() => {
+      db.prepare(`INSERT INTO weekly_topics (module_code, week, topic) VALUES ('WT0001', 0, 'Bad week')`).run()
+    }).toThrow()
+  })
+
+  it('rejects non-existent module_code', () => {
+    expect(() => {
+      db.prepare(`INSERT INTO weekly_topics (module_code, week, topic) VALUES ('NOSUCH', 1, 'Orphan')`).run()
+    }).toThrow()
+  })
+
+  it('cascades delete from module → weekly_topics → subtopics', () => {
+    // Create a throwaway module with a weekly topic and subtopic
+    db.prepare(`INSERT INTO modules (code, title, credits, semester, level) VALUES ('WT0002', 'Cascade Me', 20, '2', '5')`).run()
+    db.prepare(`INSERT INTO weekly_topics (module_code, week, topic) VALUES ('WT0002', 1, 'Temp topic')`).run()
+    const wtId = db.prepare(`SELECT id FROM weekly_topics WHERE module_code = 'WT0002'`).get().id
+    db.prepare(`INSERT INTO weekly_topic_subtopics (weekly_topic_id, position, subtopic) VALUES (?, 1, 'Temp sub')`).run(wtId)
+
+    // Delete the module — everything should cascade
+    db.prepare(`DELETE FROM modules WHERE code = 'WT0002'`).run()
+
+    expect(db.prepare(`SELECT * FROM weekly_topics WHERE module_code = 'WT0002'`).all()).toHaveLength(0)
+    expect(db.prepare(`SELECT * FROM weekly_topic_subtopics WHERE weekly_topic_id = ?`).all(wtId)).toHaveLength(0)
   })
 })
