@@ -39,6 +39,9 @@ db.pragma('foreign_keys = ON')
 // Drop existing tables (in reverse dependency order to avoid constraint errors)
 db.exec(`
   DROP TABLE IF EXISTS event_staff;
+  DROP TABLE IF EXISTS user_events;
+  DROP TABLE IF EXISTS weekly_topic_subtopics;
+  DROP TABLE IF EXISTS weekly_topics;
   DROP TABLE IF EXISTS activities;
   DROP TABLE IF EXISTS tasks;
   DROP TABLE IF EXISTS milestones;
@@ -114,6 +117,7 @@ db.exec(`
     user_id       INTEGER REFERENCES users(id) ON DELETE CASCADE,
     module_code   TEXT REFERENCES modules(code) ON DELETE CASCADE,
     academic_year TEXT,
+    theme_color   TEXT DEFAULT '#3B82F6',
     PRIMARY KEY (user_id, module_code, academic_year)
   );
 
@@ -213,7 +217,10 @@ db.exec(`
     target_amount REAL,
     description   TEXT,
     status        TEXT DEFAULT 'pending' CHECK (status IN ('pending','in_progress','completed')),
-    due_date      TEXT
+    due_date             TEXT,
+    scheduled_date       TEXT,
+    scheduled_start_time TEXT,
+    scheduled_duration   INTEGER DEFAULT 60
   );
 
   CREATE TABLE activities (
@@ -224,6 +231,22 @@ db.exec(`
     metric           TEXT NOT NULL,
     amount           REAL NOT NULL,
     description      TEXT
+  );
+
+  CREATE TABLE user_events (
+    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id             INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    title               TEXT NOT NULL,
+    description         TEXT,
+    start_time          TEXT NOT NULL,
+    end_time            TEXT,
+    is_all_day          BOOLEAN DEFAULT 0,
+    color               TEXT DEFAULT '#6366f1',
+    location            TEXT,
+    is_recurring        BOOLEAN DEFAULT 0,
+    recurrence_pattern  TEXT CHECK (recurrence_pattern IN ('weekly','fortnightly','monthly')),
+    recurrence_end_date TEXT,
+    created_at          TEXT DEFAULT (datetime('now'))
   );
 
   CREATE TABLE events (
@@ -263,6 +286,24 @@ db.exec(`
     resource_id INTEGER REFERENCES resources(id) ON DELETE CASCADE,
     author_name TEXT NOT NULL,
     PRIMARY KEY (resource_id, author_name)
+  );
+
+  CREATE TABLE weekly_topics (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    module_code      TEXT NOT NULL REFERENCES modules(code) ON DELETE CASCADE,
+    week             INTEGER NOT NULL CHECK (week >= 1),
+    week_start_date  TEXT,
+    topic            TEXT NOT NULL,
+    reading          TEXT,
+    notes            TEXT,
+    UNIQUE (module_code, week)
+  );
+
+  CREATE TABLE weekly_topic_subtopics (
+    weekly_topic_id INTEGER NOT NULL REFERENCES weekly_topics(id) ON DELETE CASCADE,
+    position        INTEGER NOT NULL,
+    subtopic        TEXT NOT NULL,
+    PRIMARY KEY (weekly_topic_id, position)
   );
 `)
 

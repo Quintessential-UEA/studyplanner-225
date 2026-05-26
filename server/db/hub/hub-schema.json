@@ -625,6 +625,50 @@
                                 }
                             }
                         }
+                    },
+                    "weekly_topics": {
+                        "type": "array",
+                        "description": "Ordered list of topics covered each teaching week",
+                        "items": {
+                            "type": "object",
+                            "required": [
+                                "week",
+                                "topic"
+                            ],
+                            "properties": {
+                                "week": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "description": "Teaching week number (1-indexed)"
+                                },
+                                "week_start_date": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "description": "ISO 8601 date of Monday for this teaching week"
+                                },
+                                "topic": {
+                                    "type": "string",
+                                    "description": "Main topic or lecture title for the week",
+                                    "example": "Introduction to Object-Oriented Programming"
+                                },
+                                "subtopics": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "More granular topics or learning points covered",
+                                    "example": ["Classes and objects", "Inheritance", "Polymorphism"]
+                                },
+                                "reading": {
+                                    "type": "string",
+                                    "description": "Recommended reading for this week (e.g., chapter reference)"
+                                },
+                                "notes": {
+                                    "type": "string",
+                                    "description": "Any additional notes for the week"
+                                }
+                            }
+                        }
                     }
                 }
             }
