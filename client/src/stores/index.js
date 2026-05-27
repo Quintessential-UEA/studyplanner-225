@@ -20,10 +20,12 @@
 // ──────────────────────────────────────────────────────────────────────────────
 
 // TODO: As you create store files, import and re-export them here.
-// Example:
-// export { useUserStore } from './user'
-// export { useSemesterStore } from './semester'
-// export { useTaskStore } from './tasks'
+
+export { useUserStore } from './user'
+export { useModuleStore } from './modules'
+export { useTaskStore } from './tasks'
+export { useSemesterStore } from './semester'
+
 
 // ─── Example Store (User) ─────────────────────────────────────────────────────
 // Uncomment and move to stores/user.js when ready.
