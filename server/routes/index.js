@@ -20,6 +20,7 @@ import eventRoutes from './events.js'
 import userRoutes from './user.js'
 import userEventRoutes from './user_events.js'
 import calendarRoutes from './calendar.js'
+import emailRoutes from './email.js'
 
 const router = express.Router()
 
@@ -37,5 +38,6 @@ router.use('/events', eventRoutes)
 router.use('/user', userRoutes)
 router.use('/user-events', userEventRoutes)
 router.use('/calendar', calendarRoutes)
+router.use('/email', emailRoutes)
 
 export default router
