@@ -89,7 +89,8 @@ export const useEventStore = defineStore('events', () => {
   /** Create a user event */
   async function createUserEvent(eventData) {
     try {
-      await api.post('/user-events', eventData)
+      const email = localStorage.getItem('email')
+      await api.post('/user-events',{...eventData, email})
       await fetchEvents()
     } catch (err) {
       console.error('Failed to create user event:', err)

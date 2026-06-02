@@ -5,8 +5,15 @@
       <p class="text-center text-dim mb-8">Login or upload your file to continue.</p>
 
       <div class="space-y-4">
+        <input
+            v-model = "email"
+            type = "email"
+            placeholder = "Enter Email"
+            class = "w-full mb -4 px-4  py-3 rounded-lg border border-edge bg-card text-body"
+        />
+
         <button
-          @click="nav.navigate('Dashboard', 'forward')"
+          @click="login"
           class="w-full bg-primary hover:bg-primary-text text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md flex justify-center items-center gap-2"
         >
           <span>Login / Continue</span>
@@ -23,5 +30,15 @@
 
 <script setup>
 import { useNavigationStore } from '../stores/navigation'
+import { ref } from 'vue'
 const nav = useNavigationStore()
+const email = ref('')
+
+function login() {
+  if (!email.value) return
+
+  localStorage.setItem('email', email.value)
+  nav.navigate('Dashboard', 'forward')
+}
+
 </script>

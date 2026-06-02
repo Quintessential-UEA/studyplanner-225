@@ -31,7 +31,8 @@ router.get('/', (req, res) => {
 // POST /api/user-events : create a new user event
 router.post('/', (req, res) => {
   try {
-    const result = createUserEvent({ user_id: USER_ID, ...req.body })
+    const email = req.body.email  
+    const result = createUserEvent({ user_id: USER_ID, ...req.body, email, email_sent: 0 })
     res.status(201).json(result)
   } catch (err) {
     res.status(400).json({ error: err.message })

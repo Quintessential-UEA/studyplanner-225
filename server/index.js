@@ -22,6 +22,8 @@ import express from 'express'
 // See server/routes/index.js for the actual route handlers.
 import apiRouter from './routes/index.js'
 
+import {startScheduler} from './services/eventScheduler.js'
+
 // ─── App Initialisation ──────────────────────────────────────────────────────
 // express() creates the application object. All configuration and routes
 // are attached to this object.
@@ -56,6 +58,8 @@ app.get('/', (req, res) => {
 // process.env.PORT reads the PORT value from your .env file.
 // The '?? 3000' means "if PORT is not set, fall back to 3000".
 const PORT = process.env.PORT ?? 3000
+
+startScheduler()
 
 app.listen(PORT, () => {
   // This callback runs once when the server successfully starts listening.

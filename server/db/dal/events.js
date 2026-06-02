@@ -42,6 +42,22 @@ export function getEventsForUser(userId) {
 }
 
 
+// ═══ EVENT EMAILS ═════════════════════════════════════════════════════════════
+const findDueEvents = db.prepare(`
+  SELECT * FROM events
+  WHERE start_time <= ?
+  AND email_sent = 0
+  AND email IS NOT NULL 
+  AND email != ''
+`)
+
+export function getDueEvents(nowIso) {
+  return findDueEvents.all(nowIso)
+}
+
+
+
+
 // ═══ EVENT STAFF ═════════════════════════════════════════════════════════════
 
 const findStaffForEvent = db.prepare(`
