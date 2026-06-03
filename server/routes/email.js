@@ -13,10 +13,9 @@ router.post("/set-email", async (req, res) => {
   try {
     console.log("Setting email:", email);
 
-        await db.query(
-      "UPDATE user_events SET email = ?",
-      [email]
-    );
+    db.prepare(
+      "UPDATE user_events SET email = ?"
+    ).run(email);
 
     res.json({ success: true });
   } catch (err) {

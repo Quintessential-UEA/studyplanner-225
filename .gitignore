@@ -16,6 +16,9 @@ dist/
 *.sqlite
 *.sqlite3
 *.db
+*.sqlite-shm
+*.sqlite-wal
+*.sqlite-journal
 
 # ─── Environment Variables ─────────────────────────────────────────────────────
 # ".env" files hold secret configuration values (passwords, API keys, etc.)

@@ -35,7 +35,7 @@ const seed = db.transaction(() => {
     const insertUser = db.prepare(`
     INSERT INTO users (email, password) VALUES (?, ?)
   `)
-    const userResult = insertUser.run(email, hashPassword('password123'))
+    const userResult = insertUser.run('jane.doe@uea.ac.uk', hashPassword('password123'))
     const userId = userResult.lastInsertRowid
 
     // ═══════════════════════════════════════════════════════════════════════════
@@ -296,50 +296,50 @@ const seed = db.transaction(() => {
     // 10. EVENTS
     // ═══════════════════════════════════════════════════════════════════════════
     const insertEvent = db.prepare(`
-    INSERT INTO events (module_code, title, type, start_time, end_time, location, is_recurring, recurrence_pattern, recurrence_end_date, is_mandatory, notes, email, email_sent)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO events (module_code, title, type, start_time, end_time, location, is_recurring, recurrence_pattern, recurrence_end_date, is_mandatory, notes, email_sent)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `)
     const insertEventStaff = db.prepare(`INSERT INTO event_staff (event_id, staff_id) VALUES (?, ?)`)
 
     // CMP5012B events
     const ev1 = insertEvent.run('CMP5012B', 'Software Engineering Lecture', 'lecture',
         '2026-01-26T09:00:00Z', '2026-01-26T11:00:00Z', 'JSC LT 0.01',
-        1, 'weekly', '2026-05-11', 0, 'Draft lecture slides available on Blackboard 48 hours in advance', event.email)
+        1, 'weekly', '2026-05-11', 0, 'Draft lecture slides available on Blackboard 48 hours in advance', 0)
     insertEventStaff.run(ev1.lastInsertRowid, staff1.lastInsertRowid)
     insertEventStaff.run(ev1.lastInsertRowid, staff2.lastInsertRowid)
 
     const ev2 = insertEvent.run('CMP5012B', 'Software Engineering Lab (Group 1)', 'lab',
         '2026-01-26T12:00:00Z', '2026-01-26T14:00:00Z', 'SCI 2.37',
-        1, 'weekly', '2026-05-11', 0, 'Labs are an essential part of the module. Work in teams.', event.email)
+        1, 'weekly', '2026-05-11', 0, 'Labs are an essential part of the module. Work in teams.', 0)
     insertEventStaff.run(ev2.lastInsertRowid, staff1.lastInsertRowid)
     insertEventStaff.run(ev2.lastInsertRowid, staff2.lastInsertRowid)
 
     const ev3 = insertEvent.run('CMP5012B', 'Software Engineering Lab (Group 2)', 'lab',
         '2026-01-26T14:00:00Z', '2026-01-26T16:00:00Z', 'SCI 2.37',
-        1, 'weekly', '2026-05-11', 0, 'Labs are an essential part of the module. Work in teams.', event.email)
+        1, 'weekly', '2026-05-11', 0, 'Labs are an essential part of the module. Work in teams.', 0)
     insertEventStaff.run(ev3.lastInsertRowid, staff1.lastInsertRowid)
     insertEventStaff.run(ev3.lastInsertRowid, staff2.lastInsertRowid)
 
     // CMP5014B events
     const ev4 = insertEvent.run('CMP5014B', 'DATA STRUCTURES AND ALGORITHMS Lecture', 'lecture',
         '2026-01-27T11:00:00Z', '2026-01-27T13:00:00Z', 'ZICER LT1',
-        1, 'weekly', '2026-05-12', 0, 'Lorem ipsum dolor sit amet', event.email)
+        1, 'weekly', '2026-05-12', 0, 'Lorem ipsum dolor sit amet', 0)
     insertEventStaff.run(ev4.lastInsertRowid, staff3.lastInsertRowid)
 
     const ev5 = insertEvent.run('CMP5014B', 'DATA STRUCTURES AND ALGORITHMS Lab', 'lab',
         '2026-01-28T14:00:00Z', '2026-01-28T16:00:00Z', 'SCI 2.37',
-        1, 'weekly', '2026-05-13', 0, 'Lorem ipsum dolor sit amet', event.email)
+        1, 'weekly', '2026-05-13', 0, 'Lorem ipsum dolor sit amet', 0)
     insertEventStaff.run(ev5.lastInsertRowid, staff3.lastInsertRowid)
 
     // CMP5045B events
     const ev6 = insertEvent.run('CMP5045B', 'Embedded Systems Lecture', 'lecture',
         '2026-01-29T09:00:00Z', '2026-01-29T11:00:00Z', 'ARTS LT2',
-        1, 'weekly', '2026-05-14', 0, 'Lorem ipsum dolor sit amet', event.email)
+        1, 'weekly', '2026-05-14', 0, 'Lorem ipsum dolor sit amet', 0)
     insertEventStaff.run(ev6.lastInsertRowid, staff4.lastInsertRowid)
 
     const ev7 = insertEvent.run('CMP5045B', 'Embedded Systems Lab', 'lab',
         '2026-01-30T10:00:00Z', '2026-01-30T12:00:00Z', 'SCI 2.37',
-        1, 'weekly', '2026-05-15', 0, 'Lorem ipsum dolor sit amet', event.email)
+        1, 'weekly', '2026-05-15', 0, 'Lorem ipsum dolor sit amet', 0)
     insertEventStaff.run(ev7.lastInsertRowid, staff5.lastInsertRowid)
 
     // ═══════════════════════════════════════════════════════════════════════════

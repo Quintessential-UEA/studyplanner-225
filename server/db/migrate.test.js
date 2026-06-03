@@ -78,6 +78,7 @@ const EXPECTED_TABLES = [
   'resource_authors',
   'weekly_topics',
   'weekly_topic_subtopics',
+  'user_events',
 ]
 
 // ─── Test Suite ──────────────────────────────────────────────────────────────
@@ -183,7 +184,7 @@ describe('Migration: CASCADE Deletes', () => {
     // Insert a throwaway module with dependents
     db.prepare(`INSERT INTO modules (code, title, credits, semester, level) VALUES ('DEL0001', 'Delete Me', 20, '1', '4')`).run()
     db.prepare(`INSERT INTO assessments (module_code, title, type, weighting, deadline) VALUES ('DEL0001', 'CW', 'exam', 100, '2026-06-01T09:00:00Z')`).run()
-    db.prepare(`INSERT INTO events (module_code, title, type, start_time, end_time, location, email, email_sent) VALUES ('DEL0001', 'Lec', 'lecture', '2025-09-15T10:00:00Z', '2025-09-15T11:00:00Z', 'LT1')`).run()
+    db.prepare(`INSERT INTO events (module_code, title, type, start_time, end_time, location, email_sent) VALUES ('DEL0001', 'Lec', 'lecture', '2025-09-15T10:00:00Z', '2025-09-15T11:00:00Z', 'LT1', 0)`).run()
     db.prepare(`INSERT INTO resources (module_code, type, title) VALUES ('DEL0001', 'textbook', 'A Book')`).run()
 
     db.prepare(`DELETE FROM modules WHERE code = 'DEL0001'`).run()
@@ -344,7 +345,7 @@ describe('Migration: CHECK Constraints', () => {
 
   it('rejects invalid event type', () => {
     expect(() => {
-      db.prepare(`INSERT INTO events (module_code, title, type, start_time, end_time, email, email_sent, location) VALUES ('CHK0001', 'Bad', 'meeting', '2025-09-15T10:00:00Z', '2025-09-15T11:00:00Z', 'LT1')`).run()
+      db.prepare(`INSERT INTO events (module_code, title, type, start_time, end_time, email_sent, location) VALUES ('CHK0001', 'Bad', 'meeting', '2025-09-15T10:00:00Z', '2025-09-15T11:00:00Z', 0, 'LT1')`).run()
     }).toThrow()
   })
 

@@ -263,7 +263,8 @@ db.exec(`
     recurrence_pattern  TEXT CHECK (recurrence_pattern IN ('weekly','fortnightly','monthly')),
     recurrence_end_date TEXT,
     is_mandatory        BOOLEAN,
-    notes               TEXT
+    notes               TEXT,
+    email_sent          BOOLEAN DEFAULT 0
   );
 
   CREATE TABLE event_staff (
