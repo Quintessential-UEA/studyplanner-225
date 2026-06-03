@@ -44,11 +44,11 @@ export function getEventsForUser(userId) {
 
 // ═══ EVENT EMAILS ═════════════════════════════════════════════════════════════
 const findDueEvents = db.prepare(`
-  SELECT * FROM events
-  WHERE start_time <= ?
+  SELECT e.*, u.email AS user_email FROM events e
+  JOIN user_modules um ON e.module_code = um.module_code
+  JOIN users u ON u.id = um.user_id
+  WHERE datetime(start_time) <= datetime(?)
   AND email_sent = 0
-  AND email IS NOT NULL 
-  AND email != ''
 `)
 
 export function getDueEvents(nowIso) {

@@ -1,30 +1,30 @@
 import express from "express";
-import transporter from "../services/email.js";
+import db from "../db/index.js";
 
 const router = express.Router();
 
-router.post("/send", async (req, res) => {
-  const { to, subject, message } = req.body;
+router.post("/set-email", async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
 
   try {
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to,
-      subject,
-      text: message,
-      html: `<p>${message}</p>`,
-    });
+    console.log("Setting email:", email);
 
-    res.json({
-      success: true,
-      messageId: info.messageId,
-    });
+        await db.query(
+      "UPDATE user_events SET email = ?",
+      [email]
+    );
+
+    res.json({ success: true });
   } catch (err) {
-    console.error(err);
+    console.error("DB error:", err);
 
     res.status(500).json({
       success: false,
-      error: err.message,
+      error: err.message
     });
   }
 });

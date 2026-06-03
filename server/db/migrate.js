@@ -240,6 +240,8 @@ db.exec(`
     description         TEXT,
     start_time          TEXT NOT NULL,
     end_time            TEXT,
+    email               TEXT,
+    email_sent          BOOLEAN DEFAULT 0,
     is_all_day          BOOLEAN DEFAULT 0,
     color               TEXT DEFAULT '#6366f1',
     location            TEXT,

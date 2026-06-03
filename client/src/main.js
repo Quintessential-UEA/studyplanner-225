@@ -18,6 +18,7 @@ import App from './App.vue'
 // This import must happen here so styles apply to the whole app.
 import './assets/main.css'
 
+
 // ─── Create the App ─────────────────────────────────────────────────────────
 // createApp(App) creates a Vue application using App.vue as the root component.
 const app = createApp(App)
@@ -26,6 +27,8 @@ const app = createApp(App)
 // .use() installs a plugin into the Vue app.
 // Pinia must be installed before any component tries to use a store.
 app.use(createPinia())
+
+
 
 // ─── Mount the App ──────────────────────────────────────────────────────────
 // .mount('#app') finds the <div id="app"> in index.html and renders the

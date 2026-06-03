@@ -9,7 +9,7 @@
             v-model = "email"
             type = "email"
             placeholder = "Enter Email"
-            class = "w-full mb -4 px-4  py-3 rounded-lg border border-edge bg-card text-body"
+            class = "w-full mb-4 px-4 py-3 rounded-lg border border-edge bg-card text-body"
         />
 
         <button
@@ -29,16 +29,27 @@
 <!-- IMPORTS -->
 
 <script setup>
-import { useNavigationStore } from '../stores/navigation'
 import { ref } from 'vue'
+import { useNavigationStore } from '../stores/navigation'
+
 const nav = useNavigationStore()
 const email = ref('')
 
-function login() {
+async function login() {
   if (!email.value) return
 
   localStorage.setItem('email', email.value)
+
+  try {
+    await fetch('http://localhost:3000/api/user/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email.value })
+    })
+  } catch (e) {
+    console.log("backend failed but continuing")
+  }
+
   nav.navigate('Dashboard', 'forward')
 }
-
 </script>
