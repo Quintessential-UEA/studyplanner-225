@@ -19,7 +19,7 @@
        :style="cellStyle(cell)"
        :title="`Value: ${cell.intensity}`"
       >
-      <span class="text-[20px] border-10px font-medium select-none" style="color: var(--color-body)">
+      <span v-if="!(colorScheme === 'accent' && localViewMode === 'day')" class="text-[20px] border-10px font-medium select-none" style="color: var(--color-body)">
         {{ cell.label }}
       </span>
       </div>
