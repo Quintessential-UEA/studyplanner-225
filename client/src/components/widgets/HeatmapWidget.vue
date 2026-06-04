@@ -15,7 +15,7 @@
     <div class="relative flex-1 min-h-0 overflow-visible" ref="containerRef">
       <div class="w-full h-full" :style="gridStyle">
       <div v-for="(cell, index) in cellDisplay" :key="index"
-       class="rounded-[3px] transition-all duration-200 cursor-pointer hover:scale-110 hover:shadow-sm"
+       class="rounded-[1px] transition-all duration-200 cursor-pointer hover:scale-110 hover:shadow-sm"
        :style="cellStyle(cell)"
        :title="`Value: ${cell.intensity}`"
       >
@@ -65,7 +65,7 @@ const cellSize = computed(() => {
 
   const cols  = COLS.value
   const rows  = Math.ceil(count/cols)
-  const gap   = 30
+  const gap   = 10
   
 
   const cellW = (containerWidth.value - gap * (cols - 1)) / cols
@@ -77,7 +77,7 @@ const gridStyle = computed(() => {
   if(!cellSize.value.w) return {}
 
   const cols      = COLS.value
-  const gap       = 30
+  const gap       = 0
   const rowWidth  = cols * cellSize.value.w + (cols - 1) * gap
 
   return {
@@ -222,7 +222,6 @@ function cellStyle(cell) {
     display:          'flex',
     alignItems:       'center',
     justifyContent:   'center',
-    boxShadow:        cell.isToday ? '0 0 0 2px var(--color-accent)' : 'none',  
   }
   //Changes tile colour based on how many events are scheduled for that day. 
     
