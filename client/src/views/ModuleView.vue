@@ -73,7 +73,7 @@
 
 
 <script setup>
-import { computed, onMounted, onUnmounted, watch } from 'vue'
+import { computed, onMounted, onUnmounted, watch, ref } from 'vue'
 import { useNavigationStore } from '../stores/navigation'
 import { useModuleStore } from '../stores/modules'
 import { useTaskStore } from '../stores/tasks'
