@@ -1,4 +1,3 @@
-// client/src/views/LoginView.vue
 <template>
   <div class="flex flex-col items-center justify-center min-h-[70vh]">
     <div class="bg-card p-8 rounded-2xl shadow-xl max-w-md w-full border border-edge">
@@ -38,9 +37,11 @@
 import { ref } from 'vue'
 import { useNavigationStore } from '../stores/navigation'
 import { useUserStore } from '../stores/user'
+import { useImportStore } from '../stores/import'
 
 const nav = useNavigationStore()
 const userStore = useUserStore()
+const importStore = useImportStore()
 
 const email = ref('')
 const submitting = ref(false)
@@ -54,7 +55,14 @@ async function handleLogin() {
 
   try {
     await userStore.login(email.value.trim().toLowerCase())
-    nav.navigate('Dashboard', 'forward')
+
+    const status = await importStore.fetchStatus()
+
+    if (status.hasImportedData) {
+      nav.navigate('Dashboard', 'forward')
+    } else {
+      nav.navigate('ImportHub', 'forward')
+    }
   } catch (err) {
     errorMessage.value =
       err.response?.data?.error ||

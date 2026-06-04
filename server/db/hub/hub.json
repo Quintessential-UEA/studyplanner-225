@@ -7,12 +7,12 @@
         "file_hash": "abc123def456"
     },
     "student": {
-        "student_number": "100000000",
+        "student_number": "100000453",
         "name": {
             "full_name": "Jane Doe",
             "preferred_name": "Jane"
         },
-        "email": "jane.doe@uea.ac.uk",
+        "email": "darraz_2003@hotmail.com",
         "school": {
             "name": "School of Computing Sciences",
             "acronym": "CMP"
