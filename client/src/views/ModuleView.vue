@@ -48,7 +48,7 @@
               <TaskManager :hideQuickAdd="false" :moduleCode="mod.code" />
             </div>
             <div class="bg-card rounded-2xl shadow-sm border border-edge p-5 flex flex-col h-56 shrink-0">
-              <HeatmapWidget title="Module Activity" colorScheme="accent" />
+              <HeatmapWidget v-model:viewMode="viewMode" :data="moduleEvents" title="Module Activity" colorScheme="accent" />
             </div>
           </div>
 
@@ -92,6 +92,9 @@ const moduleStore = useModuleStore()
 const taskStore   = useTaskStore()
 const eventStore  = useEventStore()
 const theme       = useThemeStore()
+
+const viewMode    = ref('week')
+
 
 const mod = computed(() => moduleStore.activeModuleDetail)
 
@@ -156,4 +159,20 @@ const gradesData = computed(() => {
     exams: (mod.value.assessments || []).map(a => ({ title: a.title, weight: a.weighting, score: null })),
   }
 })
+
+const moduleEvents = computed(() =>{
+  if(!mod.value) return[]
+
+  const modCode = mod.value.code
+  
+  return eventStore.events.filter(e => {
+    if (e.module_code === modCode) return true
+
+    if (e.source === 'user_event') return true
+
+    if (e.source === 'task' && e.module_code === modCode) return true
+
+    return false
+  })
+})  
 </script>

@@ -6,73 +6,227 @@
            Named slots (name="actions") let a parent add buttons to the header
            without this component needing to know about them. -->
       <slot name="actions"></slot>
-    </div>
-
-    <div class="relative flex-1 min-h-0 overflow-hidden text-[16px]">
-      <div class="flex flex-wrap gap-1.5 w-full h-full content-start">
-        <!--
-          Each cell is sized in `em` units (1em × 1em) so the whole grid
-          scales proportionally if the font size of the container changes.
-          `:title` sets the native browser tooltip on hover.
-        -->
-        <div
-          v-for="(intensity, index) in intensityData"
-          :key="index"
-          class="w-[1em] h-[1em] rounded-[3px] transition-all duration-200 cursor-pointer hover:scale-125 hover:shadow-sm flex-shrink-0"
-          :style="cellStyle(intensity)"
-          :title="`Value: ${intensity}`"
-        ></div>
+      <div class="flex gap-2 text-sm">
+        <button @click="setViewMode('day')" :class="{ 'font-bold': localViewMode === 'day' }">Day</button>
+        <button @click="setViewMode('week')" :class="{ 'font-bold': localViewMode === 'week' }">Week</button>
+        <button @click="setViewMode('month')" :class="{ 'font-bold': localViewMode === 'month' }">Month</button>
       </div>
     </div>
-  </div>
+
+    <div class="relative flex-1 min-h-0 overflow-visible" ref="containerRef">
+      <div class="w-full h-full" :style="gridStyle">
+      <div v-for="(cell, index) in cellDisplay" :key="index"
+       class="rounded-[3px] transition-all duration-200 cursor-pointer hover:scale-110 hover:shadow-sm"
+       :style="cellStyle(cell)"
+       :title="`Value: ${cell.intensity}`"
+      >
+      <span class="text-[10px] border-10px font-medium select-none" style="color: var(--color-body)">
+        {{ cell.label }}
+      </span>
+      </div>
+    </div>
+  </div>  
+</div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
+import { useEventStore } from '../../stores/events.js'
+import { useTaskStore } from '../../stores/tasks.js'
+
+
+const eventStore      = useEventStore()
+const taskStore       = useTaskStore()
+const emit            = defineEmits(['update:viewMode'])
+const containerRef    = ref(null)
+const containerWidth  = ref(0)
+const containerHeight = ref(0)
+
+let ro 
+
+onMounted(() =>{
+  ro = new ResizeObserver(([entry]) => {
+    containerWidth.value = entry.contentRect.width
+    containerHeight.value = entry.contentRect.height
+  })
+  ro.observe(containerRef.value)
+})
+
+onUnmounted(() => ro?.disconnect())
+
+const cellSize = computed(() => {
+  const count = cellDisplay.value.length
+  if(!count || !containerWidth.value) return 0
+
+  const ratio = containerWidth.value / containerHeight.value
+  const cols  = Math.ceil(Math.sqrt(count * ratio))
+  const rows  = Math.ceil(count/cols)
+  const gap   = 30
+
+  const cellW = (containerWidth.value - gap * (cols - 1)) / cols
+  const cellH = (containerHeight.value - gap * (rows - 1)) / rows
+  return Math.floor(Math.min(cellW, cellH))
+})
+
+const gridStyle = computed(() => {
+  if(!cellSize.value) return {}
+  return {
+    display:        'flex',
+    flexWrap:       'wrap',
+    justifyContent: 'center',
+    alignContent:   'center',
+    gap:            '30px',
+    width:          '100%',
+    height:         '100%',
+  }
+})
 
 const props = defineProps({
   title:       { type: String, default: 'Activity Heatmap' },
   data:        { type: Array,  default: () => []           },
-  colorScheme: { type: String, default: 'green'            }
+  colorScheme: { type: String, default: 'green'            },
+  viewMode:    { type: String, default: 'week'}
 })
+
+const localViewMode = ref(props.viewMode)
+
+watch(() => props.viewMode, val => {localViewMode.value = val})
+
+function setViewMode(mode){
+  localViewMode.value = mode
+  emit('update:viewMode', mode)
+}
+
+
 
 // If no real data is provided, generate random placeholder cells so the
 // widget looks populated on the dashboard while data is still being built out (REMOVE LATER).
-const intensityData = computed(() => {
-  if (props.data && props.data.length > 0) return props.data
-  return Array.from({ length: 2500 }, () => {
-    const r = Math.random()
-    if (r > 0.8) return Math.floor(Math.random() * 3) + 2
-    if (r > 0.5) return 1
-    return 0
-  })
+
+
+const resolvedData = computed(() => {
+  const storeEvents = eventStore.events
+
+  const storeTasks = taskStore.tasks
+    .filter(t => t.due_date)
+    .map(t => ({...t, start: t.due_date}))
+
+
+
+/*
+  //Testing here by just adding events to make sure heatmap changes colour
+  const today     = new Date()
+  const yesterday = new Date(today); yesterday.setDate(today.getDate() -1)
+  const tomorrow  = new Date(today); tomorrow.setDate(today.getDate() +1)
+
+  const testData = [
+  
+  {start_time: today.toISOString()},
+  {start_time: today.toISOString()},
+  {start_time: today.toISOString()},
+  {start_time: today.toISOString()},
+  {start_time: today.toISOString()},
+  {start_time: today.toISOString()},
+  {start_time: today.toISOString()},
+  {start_time: today.toISOString()},
+  {start_time: tomorrow.toISOString()},
+  {start_time: tomorrow.toISOString()},
+  {start_time: tomorrow.toISOString()},
+  {start_time: tomorrow.toISOString()},
+  {start_time: yesterday.toISOString()},
+  {start_time: yesterday.toISOString()},
+  ]
+
+*/
+
+  
+  return [...storeEvents, ...storeTasks, /*...testData*/]
 })
 
-// Maps colorScheme to the CSS variable that drives the heatmap colour.
-// Intensity 0 uses --color-pop (theme-aware empty-cell colour).
-// Intensities 1-4 are that base colour at increasing opacity levels.
-const BASE_VAR = {
-  green:  '--color-ok',
-  blue:   '--color-primary',
-  accent: '--color-accent',
-  orange: '--color-warn',
-}
+const cellDisplay = computed(() => {
+  const map = new Map()
 
-function cellStyle(intensity) {
-  if (intensity === 0) {
-    return { backgroundColor: 'var(--color-pop)' }
+  for (const event of resolvedData.value){
+    const raw = event.start_time ?? event.start
+    if(!raw) continue
+    const key = new Date(raw).toISOString().slice(0, 10)
+    map.set(key, (map.get(key) || 0) + 1)
   }
-  const varName = BASE_VAR[props.colorScheme] || '--color-primary'
-  // can't pass a CSS custom property directly into rgba() (e.g. rgba(var(--color-ok), 0.5))
-  // bc CSS variables resolve to full colour strings, not numeric channels.
-  // Instead we use the colour at full saturation and vary `opacity` (simpler).
-  const opacities = [0, 0.25, 0.50, 0.75, 1.0]
-  const opacity   = opacities[Math.min(intensity, 4)]
-  return {
-    position:        'relative',
-    backgroundColor: `var(${varName})`,
-    opacity,
+
+  const result = []
+  const now    = new Date()
+
+//Get view by day/week/month 
+  const addDayRange = (start, end) => {
+    for(let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)){
+    const key = d.toISOString().slice(0, 10)
+    result.push({ label: d.getDate(), intensity: map.get(key) || 0,
+    isToday: d.toDateString() === now.toDateString()})
+    }
   }
+
+  
+  if (localViewMode.value === 'month'){
+  const start = new Date(now.getFullYear(), now.getMonth(), 1)
+  const end = new Date(now.getFullYear(), now.getMonth() +1, 0)
+  addDayRange(start, end)
+  }
+
+
+  else if(localViewMode.value === 'week'){
+    const start = new Date(now)
+    start.setDate(now.getDate() - 3)
+    const end = new Date(now)
+    end.setDate(now.getDate() + 3)
+    addDayRange(start, end)
+  }
+
+  else if (localViewMode.value === 'day'){
+    return Array.from({ length: 24 }, (_, h) =>{
+      const count = props.data.filter(e => {
+        const d = new Date(e.start_time ?? e.start)
+        return d.toDateString() === now.toDateString() && d.getHours() === h
+      }).length
+      const label = h === 0 ? '12am' : h < 12 ? `${h}am` : h === 12 ?'12pm' : `${h - 12}pm`
+      return { label, intensity: count }
+    })
+  }
+  return result
+})
+
+const maxIntensity = computed(() => {
+  const data = cellDisplay.value
+  return data.length ? Math.max(... data.map(c => c.intensity)) : 1
+})
+
+
+
+
+// Intensity 0 uses --color-pop (theme-aware empty-cell colour).
+// Intensity range based on number of events, using different colours from the CSS colorScheme.
+function cellStyle(cell) {
+  const size = cellSize.value
+  const base = {
+    width:            size + 'px',
+    height:           size + 'px',
+    flexShrink:       0,
+    display:          'flex',
+    alignItems:       'center',
+    justifyContent:   'center',
+    boxShadow:        cell.isToday ? '0 0 0 2px var(--color-accent)' : 'none',  
+  }
+  //Changes tile colour based on how many events are scheduled for that day. 
+    
+  if(cell.intensity === 0) {
+    return { ...base, backgroundColor: 'var(--color-pop)' }
+  }
+  else if(cell.intensity <= 2){
+    return { ...base, backgroundColor: 'color-mix(in srgb, var(--color-ok) 50%, transparent)' }
+  }
+  else if(cell.intensity <= 4){
+    return { ...base, backgroundColor: 'color-mix(in srgb, var(--color-warn) 65%, transparent)' }
+  }
+  return { ...base, backgroundColor: 'color-mix(in srgb, var(--color-danger) 85%, transparent)' }
+
 }
 </script>
 
