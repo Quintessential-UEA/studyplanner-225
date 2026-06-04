@@ -1,42 +1,134 @@
-// ─── src/stores/user.js ──────────────────────────────────────────────────────
-// Pinia store for the current user's profile data.
-//
-// Fetches from GET /api/user/profile and provides reactive state
-// for NavBar (avatar, name) and any view that needs user info.
-// ──────────────────────────────────────────────────────────────────────────────
-
+// client/src/stores/user.js
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '../api'
 
 export const useUserStore = defineStore('user', () => {
-  // ─── State ────────────────────────────────────────────────────────────────
+  const token = ref(localStorage.getItem('token') || '')
   const profile = ref(null)
   const loading = ref(false)
 
-  // ─── Getters ──────────────────────────────────────────────────────────────
-  const displayName = computed(() => profile.value?.preferred_name || profile.value?.full_name || 'Guest')
+  const isAuthenticated = computed(() => Boolean(token.value))
+
+  const displayName = computed(() => {
+    if (profile.value?.preferred_name) return profile.value.preferred_name
+    if (profile.value?.full_name) return profile.value.full_name
+    if (profile.value?.email) return profile.value.email
+    return 'Guest'
+  })
 
   const initials = computed(() => {
-    const name = profile.value?.full_name
+    const name = profile.value?.full_name || profile.value?.preferred_name || profile.value?.email
+
     if (!name) return '?'
-    return name.split(' ').map(n => n[0]).join('').toUpperCase()
+
+    if (name.includes('@')) {
+      return name[0].toUpperCase()
+    }
+
+    return name
+      .split(' ')
+      .filter(Boolean)
+      .map((part) => part[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase()
   })
 
   const studentNumber = computed(() => profile.value?.student_number || '')
 
-  // ─── Actions ──────────────────────────────────────────────────────────────
-  async function fetchProfile() {
+  function setToken(value) {
+    token.value = value || ''
+
+    if (token.value) {
+      localStorage.setItem('token', token.value)
+    } else {
+      localStorage.removeItem('token')
+    }
+  }
+
+  function clearSession() {
+    setToken('')
+    profile.value = null
+  }
+
+  async function login(email) {
     loading.value = true
+
     try {
-      const { data } = await api.get('/user/profile')
-      profile.value = data
+      const { data } = await api.post('/user/login', { email })
+
+      if (!data?.token) {
+        throw new Error('Login response did not include a token')
+      }
+
+      setToken(data.token)
+      profile.value = data.user ?? null
+
+      if (!profile.value) {
+        await fetchProfile()
+      }
+
+      return profile.value
     } catch (err) {
-      console.error('Failed to fetch profile:', err)
+      clearSession()
+      throw err
     } finally {
       loading.value = false
     }
   }
 
-  return { profile, loading, displayName, initials, studentNumber, fetchProfile }
+  async function fetchProfile() {
+    if (!token.value) {
+      profile.value = null
+      return null
+    }
+
+    loading.value = true
+
+    try {
+      const { data } = await api.get('/user/profile')
+      profile.value = data
+      return data
+    } catch (err) {
+      profile.value = null
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function bootstrapSession() {
+    if (!token.value) {
+      profile.value = null
+      return false
+    }
+
+    try {
+      await fetchProfile()
+      return true
+    } catch {
+      clearSession()
+      return false
+    }
+  }
+
+  function logout() {
+    clearSession()
+  }
+
+  return {
+    token,
+    profile,
+    loading,
+    isAuthenticated,
+    displayName,
+    initials,
+    studentNumber,
+    login,
+    fetchProfile,
+    bootstrapSession,
+    logout,
+    clearSession,
+  }
 })

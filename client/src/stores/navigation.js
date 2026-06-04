@@ -1,70 +1,80 @@
+// client/src/stores/navigation.js
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 
-const SESSION_TIMEOUT_MS = 30 * 60 * 1000 // 30 minutes
+const STORAGE_KEY = 'appState'
 
-export const useNavigationStore = defineStore('navigation', () => {
-  const currentView = ref('Login')
-  const enableTransitions = ref(true)
-  const isExpanded = ref(true)
-  
-  // Track the direction of navigation for sliding animations
-  // 'forward' or 'backward'
-  const transitionDirection = ref('forward')
+function loadSavedState() {
+  const raw = localStorage.getItem(STORAGE_KEY)
 
-  // Read from localStorage on initialization
-  const savedState = localStorage.getItem('appState')
-  if (savedState) {
-    try {
-      const parsed = JSON.parse(savedState)
-      const now = Date.now()
-      
-      // Check if session has expired
-      if (now - parsed.lastActivity < SESSION_TIMEOUT_MS) {
-        currentView.value = parsed.currentView || 'Login'
-        if (parsed.enableTransitions !== undefined) {
-          enableTransitions.value = parsed.enableTransitions
-        }
-        if (parsed.isExpanded !== undefined) {
-          isExpanded.value = parsed.isExpanded
-        }
-      } else {
-        // Session expired, clean up
-        localStorage.removeItem('appState')
-      }
-    } catch (e) {
-      console.error('Failed to parse saved state', e)
+  if (!raw) {
+    return {
+      currentView: 'Login',
+      enableTransitions: true,
+      isExpanded: true,
+      transitionDirection: 'forward',
     }
   }
 
-  // Save to localStorage whenever state changes
-  const updateActivity = () => {
-    localStorage.setItem('appState', JSON.stringify({
-      currentView: currentView.value,
-      enableTransitions: enableTransitions.value,
-      isExpanded: isExpanded.value,
-      lastActivity: Date.now()
-    }))
+  try {
+    const parsed = JSON.parse(raw)
+
+    return {
+      currentView: parsed.currentView || 'Login',
+      enableTransitions: parsed.enableTransitions ?? true,
+      isExpanded: parsed.isExpanded ?? true,
+      transitionDirection: parsed.transitionDirection || 'forward',
+    }
+  } catch {
+    localStorage.removeItem(STORAGE_KEY)
+    return {
+      currentView: 'Login',
+      enableTransitions: true,
+      isExpanded: true,
+      transitionDirection: 'forward',
+    }
+  }
+}
+
+export const useNavigationStore = defineStore('navigation', () => {
+  const saved = loadSavedState()
+
+  const currentView = ref(saved.currentView)
+  const enableTransitions = ref(saved.enableTransitions)
+  const isExpanded = ref(saved.isExpanded)
+  const transitionDirection = ref(saved.transitionDirection)
+
+  function persistState() {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        currentView: currentView.value,
+        enableTransitions: enableTransitions.value,
+        isExpanded: isExpanded.value,
+        transitionDirection: transitionDirection.value,
+      })
+    )
   }
 
-  watch([currentView, enableTransitions, isExpanded], () => {
-    updateActivity()
-  }, { deep: true })
+  watch(
+    [currentView, enableTransitions, isExpanded, transitionDirection],
+    persistState,
+    { deep: true }
+  )
 
-  // Intercept window interactions to reset session timeout
-  if (typeof window !== 'undefined') {
-    const resetTimeout = () => updateActivity()
-    window.addEventListener('click', resetTimeout)
-    window.addEventListener('keypress', resetTimeout)
-  }
-
-  const navigate = (view, direction = 'forward') => {
+  function navigate(view, direction = 'forward') {
     transitionDirection.value = direction
     currentView.value = view
   }
 
-  const toggleTransitions = () => {
+  function toggleTransitions() {
     enableTransitions.value = !enableTransitions.value
+  }
+
+  function resetForLogout() {
+    transitionDirection.value = 'backward'
+    currentView.value = 'Login'
+    persistState()
   }
 
   return {
@@ -73,7 +83,7 @@ export const useNavigationStore = defineStore('navigation', () => {
     isExpanded,
     transitionDirection,
     navigate,
-    toggleTransitions
+    toggleTransitions,
+    resetForLogout,
   }
 })
-

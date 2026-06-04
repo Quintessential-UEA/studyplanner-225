@@ -13,12 +13,9 @@
     </div>
 
     <div class="bg-card rounded-2xl shadow-sm border border-edge overflow-hidden">
-
-      <!-- Appearance -->
       <div class="p-6 border-b border-edge">
         <h3 class="text-lg font-semibold text-body mb-4">Appearance</h3>
 
-        <!-- Dark Mode -->
         <div class="flex items-center justify-between mb-4">
           <div>
             <p class="font-medium text-body">Dark Mode</p>
@@ -36,7 +33,6 @@
           </button>
         </div>
 
-        <!-- View Transitions -->
         <div class="flex items-center justify-between">
           <div>
             <p class="font-medium text-body">Enable View Transitions</p>
@@ -55,7 +51,6 @@
         </div>
       </div>
 
-      <!-- Module Themes -->
       <div class="p-6 border-b border-edge">
         <h3 class="text-lg font-semibold text-body mb-4">Module Themes</h3>
         <div class="space-y-4">
@@ -78,7 +73,6 @@
         </div>
       </div>
 
-      <!-- Account -->
       <div class="p-6 border-b border-edge">
         <h3 class="text-lg font-semibold text-body mb-4">Account</h3>
         <button
@@ -88,31 +82,43 @@
           Log Out
         </button>
       </div>
-
     </div>
   </div>
 </template>
-
-
-<!-- IMPORTS -->
-
 
 <script setup>
 import { onMounted } from 'vue'
 import { useNavigationStore } from '../stores/navigation'
 import { useModuleStore } from '../stores/modules'
 import { useThemeStore } from '../stores/theme'
+import { useUserStore } from '../stores/user'
+import { useTaskStore } from '../stores/tasks'
+import { useEventStore } from '../stores/events'
 
-const nav         = useNavigationStore()
+const nav = useNavigationStore()
 const moduleStore = useModuleStore()
-const theme       = useThemeStore()
+const theme = useThemeStore()
+const userStore = useUserStore()
+const taskStore = useTaskStore()
+const eventStore = useEventStore()
 
 onMounted(() => {
-  if (moduleStore.modules.length === 0) moduleStore.fetchModules()
+  if (userStore.isAuthenticated && moduleStore.modules.length === 0) {
+    moduleStore.fetchModules()
+  }
 })
 
-const logout = () => {
+function logout() {
+  userStore.logout()
+  eventStore.clear()
+
+  moduleStore.modules = []
+  moduleStore.activeModuleCode = null
+  moduleStore.activeModuleDetail = null
+
+  taskStore.tasks = []
+
   localStorage.removeItem('appState')
-  nav.navigate('Login', 'backward')
+  nav.resetForLogout()
 }
 </script>

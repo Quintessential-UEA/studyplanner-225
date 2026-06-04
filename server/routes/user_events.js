@@ -1,55 +1,72 @@
-// ─── server/routes/user_events.js ────────────────────────────────────────────
-// API routes for user-created personal calendar events.
-// All paths relative to /api/user-events.
-//
-// Endpoints:
-//   GET    /               All user events
-//   POST   /               Create a new user event
-//   PUT    /:id            Update a user event
-//   DELETE /:id            Delete a user event
-// ──────────────────────────────────────────────────────────────────────────────
-
+// server/routes/user_events.js
 import express from 'express'
 import {
   getUserEvents,
-  getUserEventById,
   createUserEvent,
   updateUserEvent,
   deleteUserEvent,
 } from '../db/dal/user_events.js'
+import { getUserById } from '../db/dal/users.js'
+import { requireAuth } from '../middleware/auth.js'
 
 const router = express.Router()
 
-// Temporary: hardcode userId until auth is implemented
-const USER_ID = 1
+router.use(requireAuth)
 
-// GET /api/user-events : all user events
 router.get('/', (req, res) => {
-  res.json(getUserEvents(USER_ID))
+  res.json(getUserEvents(req.userId))
 })
 
-// POST /api/user-events : create a new user event
 router.post('/', (req, res) => {
   try {
-    const result = createUserEvent({ user_id: USER_ID, ...req.body, email : req.body.email, email_sent: 0 })
-    res.status(201).json(result)
+    const user = getUserById(req.userId)
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+
+    const result = createUserEvent({
+      user_id: req.userId,
+      ...req.body,
+      email: user.email,
+      email_sent: 0,
+    })
+
+    return res.status(201).json(result)
   } catch (err) {
-    res.status(400).json({ error: err.message })
+    return res.status(400).json({ error: err.message })
   }
 })
 
-// PUT /api/user-events/:id : update a user event
 router.put('/:id', (req, res) => {
-  const changes = updateUserEvent(Number(req.params.id), USER_ID, req.body)
-  if (changes === 0) return res.status(404).json({ error: 'User event not found' })
-  res.json({ success: true })
+  const user = getUserById(req.userId)
+
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' })
+  }
+
+  const changes = updateUserEvent(
+    Number(req.params.id),
+    req.userId,
+    req.body,
+    user.email
+  )
+
+  if (changes === 0) {
+    return res.status(404).json({ error: 'User event not found' })
+  }
+
+  return res.json({ success: true })
 })
 
-// DELETE /api/user-events/:id : delete a user event
 router.delete('/:id', (req, res) => {
-  const changes = deleteUserEvent(Number(req.params.id), USER_ID)
-  if (changes === 0) return res.status(404).json({ error: 'User event not found' })
-  res.json({ success: true })
+  const changes = deleteUserEvent(Number(req.params.id), req.userId)
+
+  if (changes === 0) {
+    return res.status(404).json({ error: 'User event not found' })
+  }
+
+  return res.json({ success: true })
 })
 
 export default router

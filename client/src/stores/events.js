@@ -1,47 +1,52 @@
-// ─── src/stores/events.js ────────────────────────────────────────────────────
-// Pinia store for the calendar.
-// Fetches all events (academic, deadlines, user events, tasks) from /api/calendar.
-// ──────────────────────────────────────────────────────────────────────────────
-
+// client/src/stores/events.js
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '../api'
 
+function extractDbId(value) {
+  if (typeof value === 'number') return value
+  if (typeof value === 'string') {
+    const lastPart = value.split('-').pop()
+    const parsed = Number(lastPart)
+    return Number.isNaN(parsed) ? null : parsed
+  }
+
+  if (value && typeof value === 'object') {
+    if (value.db_id != null) return Number(value.db_id)
+    if (typeof value.id === 'string') {
+      const lastPart = value.id.split('-').pop()
+      const parsed = Number(lastPart)
+      return Number.isNaN(parsed) ? null : parsed
+    }
+    if (typeof value.id === 'number') return value.id
+  }
+
+  return null
+}
+
 export const useEventStore = defineStore('events', () => {
-  // ─── State ────────────────────────────────────────────────────────────────
   const events = ref([])
   const loading = ref(false)
+  const error = ref('')
+  const selectedEvent = ref(null)
 
-  // ─── Getters ──────────────────────────────────────────────────────────────
-
-  /** Events formatted for FullCalendar */
   const calendarEvents = computed(() =>
-    events.value.map(e => {
-      // Colour logic:
-      // - Lectures: full opacity module color
-      // - Labs/etc: 80% opacity module color ('cc')
-      // - Deadlines: full opacity module color + red text? Or just module color.
-      // - User Events: 50% opacity ('80') of their chosen color
-      // - Tasks: 50% opacity ('80') of module color (if any) or default
-
-      let bgColor = '#6b7280' // default gray
+    events.value.map((e) => {
+      let bgColor = '#6b7280'
       let textColor = '#ffffff'
       let borderColor = 'transparent'
-      let classNames = []
 
       if (e.source === 'academic') {
         bgColor = e.theme_color || '#3b82f6'
-        if (e.type !== 'lecture') {
-          bgColor += 'cc' // 80% opacity for non-lectures
-        }
+        if (e.type !== 'lecture') bgColor += 'cc'
       } else if (e.source === 'deadline') {
         bgColor = e.theme_color || '#ef4444'
-        borderColor = '#ef4444' // red border to highlight
+        borderColor = '#ef4444'
       } else if (e.source === 'user_event') {
-        bgColor = (e.color || '#6366f1') + '80' // 50% opacity
-        textColor = '#f8fafc' // slate-50
+        bgColor = (e.color || '#6366f1') + '80'
+        textColor = '#f8fafc'
       } else if (e.source === 'task') {
-        bgColor = (e.theme_color || '#10b981') + '80' // 50% opacity
+        bgColor = (e.theme_color || '#10b981') + '80'
         textColor = '#f8fafc'
       }
 
@@ -55,42 +60,44 @@ export const useEventStore = defineStore('events', () => {
         durationEditable: e.source === 'user_event' || e.source === 'task',
         backgroundColor: bgColor,
         borderColor: borderColor !== 'transparent' ? borderColor : bgColor,
-        textColor: textColor,
-        classNames,
+        textColor,
+        classNames: [],
         extendedProps: { ...e },
       }
     })
   )
 
-  /** Next upcoming event from now */
   const upcomingEvent = computed(() => {
     const now = new Date().toISOString()
+
     const future = events.value
-      .filter(e => e.start > now && e.source !== 'deadline')
+      .filter((event) => event.start > now && event.source !== 'deadline')
       .sort((a, b) => a.start.localeCompare(b.start))
+
     return future[0] || null
   })
 
-  // ─── Actions ──────────────────────────────────────────────────────────────
-
-  /** Fetch the unified calendar feed */
   async function fetchEvents() {
     loading.value = true
+    error.value = ''
+
     try {
       const { data } = await api.get('/calendar')
       events.value = data
     } catch (err) {
+      error.value =
+        err.response?.data?.error ||
+        err.message ||
+        'Failed to fetch calendar events'
       console.error('Failed to fetch calendar events:', err)
     } finally {
       loading.value = false
     }
   }
 
-  /** Create a user event */
   async function createUserEvent(eventData) {
     try {
-      const email = localStorage.getItem('email')
-      await api.post('/user-events',{...eventData, email})
+      await api.post('/user-events', eventData)
       await fetchEvents()
     } catch (err) {
       console.error('Failed to create user event:', err)
@@ -98,10 +105,15 @@ export const useEventStore = defineStore('events', () => {
     }
   }
 
-  /** Update a user event */
   async function updateUserEvent(id, eventData) {
+    const dbId = extractDbId(id)
+
+    if (!dbId) {
+      throw new Error('Invalid user event id')
+    }
+
     try {
-      await api.put(`/user-events/${id}`, eventData)
+      await api.put(`/user-events/${dbId}`, eventData)
       await fetchEvents()
     } catch (err) {
       console.error('Failed to update user event:', err)
@@ -109,10 +121,15 @@ export const useEventStore = defineStore('events', () => {
     }
   }
 
-  /** Delete a user event */
   async function deleteUserEvent(id) {
+    const dbId = extractDbId(id)
+
+    if (!dbId) {
+      throw new Error('Invalid user event id')
+    }
+
     try {
-      await api.delete(`/user-events/${id}`)
+      await api.delete(`/user-events/${dbId}`)
       await fetchEvents()
     } catch (err) {
       console.error('Failed to delete user event:', err)
@@ -120,10 +137,15 @@ export const useEventStore = defineStore('events', () => {
     }
   }
 
-  /** Schedule a task via drag-and-drop */
   async function scheduleTask(id, scheduleData) {
+    const taskId = extractDbId(id)
+
+    if (!taskId) {
+      throw new Error('Invalid task id')
+    }
+
     try {
-      await api.patch(`/tasks/${id}/schedule`, scheduleData)
+      await api.patch(`/tasks/${taskId}/schedule`, scheduleData)
       await fetchEvents()
     } catch (err) {
       console.error('Failed to schedule task:', err)
@@ -131,8 +153,46 @@ export const useEventStore = defineStore('events', () => {
     }
   }
 
+  async function unscheduleTask(id) {
+    const taskId = extractDbId(id)
+
+    if (!taskId) {
+      throw new Error('Invalid task id')
+    }
+
+    try {
+      await api.delete(`/tasks/${taskId}/schedule`)
+      await fetchEvents()
+    } catch (err) {
+      console.error('Failed to unschedule task:', err)
+      throw err
+    }
+  }
+
+  function setSelectedEvent(event) {
+    selectedEvent.value = event ?? null
+  }
+
+  function clear() {
+    events.value = []
+    selectedEvent.value = null
+    error.value = ''
+  }
+
   return {
-    events, loading, calendarEvents, upcomingEvent,
-    fetchEvents, createUserEvent, updateUserEvent, deleteUserEvent, scheduleTask
+    events,
+    loading,
+    error,
+    selectedEvent,
+    calendarEvents,
+    upcomingEvent,
+    fetchEvents,
+    createUserEvent,
+    updateUserEvent,
+    deleteUserEvent,
+    scheduleTask,
+    unscheduleTask,
+    setSelectedEvent,
+    clear,
   }
 })

@@ -1,55 +1,75 @@
-// ─── server/routes/user.js ───────────────────────────────────────────────────
-// API routes for user profile data. All paths relative to /api/user.
-//
-// Endpoints:
-//   GET  /profile   Current user's account + student profile
-// ──────────────────────────────────────────────────────────────────────────────
+// server/routes/user.js
 import express from 'express'
-import db from '../db/index.js'
-import { getUserById, getProfile } from '../db/dal/users.js'
+import {
+  createUser,
+  getProfile,
+  getUserByEmail,
+  getUserById,
+} from '../db/dal/users.js'
+import { requireAuth, signAuthToken } from '../middleware/auth.js'
 
 const router = express.Router()
 
-// TEMP ONLY 
-let CURRENT_USER_ID = 1
+function sanitizeUser(user) {
+  const { password, ...safeUser } = user
+  return safeUser
+}
 
-// ─── LOGIN ─────────────────────────────────────────────
+function normaliseEmail(value) {
+  return String(value ?? '').trim().toLowerCase()
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
 router.post('/login', (req, res) => {
-  const { email } = req.body
+  const email = normaliseEmail(req.body.email)
 
   if (!email) {
-    return res.status(400).json({ error: 'Email required' })
+    return res.status(400).json({ error: 'Email is required' })
   }
 
-  let user = db.prepare(
-    'SELECT * FROM users WHERE email = ?'
-  ).get(email)
+  if (!isValidEmail(email)) {
+    return res.status(400).json({ error: 'Enter a valid email address' })
+  }
+
+  let user = getUserByEmail(email)
 
   if (!user) {
-    const result = db.prepare(
-      'INSERT INTO users (email, password) VALUES (?, ?)'
-    ).run(email, 'temp')
-
-    user = {
-      id: result.lastInsertRowid,
-      email
-    }
+    const created = createUser(email, '__email_only__')
+    user = getUserById(Number(created.id))
   }
 
-  CURRENT_USER_ID = user.id
+  if (!user) {
+    return res.status(500).json({ error: 'Failed to create or load user' })
+  }
 
-  res.json({ userId: user.id })
+  const profile = getProfile(user.id) ?? {}
+  const token = signAuthToken(user)
+
+  return res.json({
+    token,
+    user: {
+      ...sanitizeUser(user),
+      ...profile,
+    },
+  })
 })
 
-// ─── PROFILE ─────────────────────
-router.get('/profile', (req, res) => {
-  const user = getUserById(CURRENT_USER_ID)
-  if (!user) return res.status(404).json({ error: 'User not found' })
+router.get('/profile', requireAuth, (req, res) => {
+  const user = getUserById(req.userId)
 
-  const profile = getProfile(CURRENT_USER_ID)
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' })
+  }
 
-  const { password, ...safeUser } = user
-  res.json({ ...safeUser, ...profile })
+  const profile = getProfile(req.userId) ?? {}
+
+  return res.json({
+    ...sanitizeUser(user),
+    ...profile,
+  })
 })
 
 export default router
