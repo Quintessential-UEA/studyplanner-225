@@ -9,8 +9,7 @@
       <div class="flex gap-2 text-sm">
         <button @click="setViewMode('day')" :class="{ 'font-bold': localViewMode === 'day' }">Day</button>
         <button @click="setViewMode('week')" :class="{ 'font-bold': localViewMode === 'week' }">Week</button>
-        <button @click="setViewMode('month')" :class="{ 'font-bold': localViewMode === 'month' }">Month</button>
-      </div>
+        </div>
     </div>
 
     <div class="relative flex-1 min-h-0 overflow-visible" ref="containerRef">
@@ -54,30 +53,43 @@ onMounted(() =>{
 
 onUnmounted(() => ro?.disconnect())
 
+const COLS = computed(() => {
+  if(localViewMode.value === 'week') return 7
+  if(localViewMode.value === 'day') return 8
+  return 7
+})
+
 const cellSize = computed(() => {
   const count = cellDisplay.value.length
-  if(!count || !containerWidth.value) return 0
+  if(!count || !containerWidth.value || !containerHeight.value) return 0
 
-  const ratio = containerWidth.value / containerHeight.value
-  const cols  = Math.ceil(Math.sqrt(count * ratio))
+  const cols  = COLS.value
   const rows  = Math.ceil(count/cols)
   const gap   = 30
+  
 
   const cellW = (containerWidth.value - gap * (cols - 1)) / cols
   const cellH = (containerHeight.value - gap * (rows - 1)) / rows
-  return Math.floor(Math.min(cellW, cellH))
+  return {w: Math.floor(cellW), h: Math.floor(cellH)}
 })
 
 const gridStyle = computed(() => {
-  if(!cellSize.value) return {}
+  if(!cellSize.value.w) return {}
+
+  const cols      = COLS.value
+  const gap       = 30
+  const rowWidth  = cols * cellSize.value.w + (cols - 1) * gap
+
   return {
     display:        'flex',
     flexWrap:       'wrap',
     justifyContent: 'center',
     alignContent:   'center',
-    gap:            '30px',
-    width:          '100%',
+    gap:            `${gap}px`,
+    width:          `${rowWidth}px`,
     height:         '100%',
+    margin:         '0 auto',
+
   }
 })
 
@@ -155,7 +167,7 @@ const cellDisplay = computed(() => {
   const result = []
   const now    = new Date()
 
-//Get view by day/week/month 
+//Get view by day/week/ 
   const addDayRange = (start, end) => {
     for(let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)){
     const key = d.toISOString().slice(0, 10)
@@ -163,16 +175,8 @@ const cellDisplay = computed(() => {
     isToday: d.toDateString() === now.toDateString()})
     }
   }
-
-  
-  if (localViewMode.value === 'month'){
-  const start = new Date(now.getFullYear(), now.getMonth(), 1)
-  const end = new Date(now.getFullYear(), now.getMonth() +1, 0)
-  addDayRange(start, end)
-  }
-
-
-  else if(localViewMode.value === 'week'){
+ 
+   if(localViewMode.value === 'week'){
     const start = new Date(now)
     start.setDate(now.getDate() - 3)
     const end = new Date(now)
@@ -204,10 +208,10 @@ const maxIntensity = computed(() => {
 // Intensity 0 uses --color-pop (theme-aware empty-cell colour).
 // Intensity range based on number of events, using different colours from the CSS colorScheme.
 function cellStyle(cell) {
-  const size = cellSize.value
+  const { w, h } = cellSize.value
   const base = {
-    width:            size + 'px',
-    height:           size + 'px',
+    width:            w + 'px',
+    height:           h + 'px',
     flexShrink:       0,
     display:          'flex',
     alignItems:       'center',
