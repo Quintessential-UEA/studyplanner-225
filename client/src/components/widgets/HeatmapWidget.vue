@@ -19,7 +19,7 @@
        :style="cellStyle(cell)"
        :title="`Value: ${cell.intensity}`"
       >
-      <span class="text-[10px] border-10px font-medium select-none" style="color: var(--color-body)">
+      <span class="text-[20px] border-10px font-medium select-none" style="color: var(--color-body)">
         {{ cell.label }}
       </span>
       </div>
@@ -167,11 +167,17 @@ const cellDisplay = computed(() => {
   const result = []
   const now    = new Date()
 
+  const getOrdinal = (n) => {
+    const s = ['th', 'st', 'nd', 'rd']
+    const v = n % 100 
+    return n + (s[(v - 20) % 10] || s[v] || s[0])
+  }
+
 //Get view by day/week/ 
   const addDayRange = (start, end) => {
     for(let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)){
     const key = d.toISOString().slice(0, 10)
-    result.push({ label: d.getDate(), intensity: map.get(key) || 0,
+    result.push({ label: getOrdinal(d.getDate()), intensity: map.get(key) || 0,
     isToday: d.toDateString() === now.toDateString()})
     }
   }
@@ -190,7 +196,7 @@ const cellDisplay = computed(() => {
         const d = new Date(e.start_time ?? e.start)
         return d.toDateString() === now.toDateString() && d.getHours() === h
       }).length
-      const label = h === 0 ? '12am' : h < 12 ? `${h}am` : h === 12 ?'12pm' : `${h - 12}pm`
+      const label = h === 0 ? '12:00 am' : h < 12 ? `${h}:00 am` : h === 12 ?'12:00 pm' : `${h - 12}:00 pm`
       return { label, intensity: count }
     })
   }
@@ -221,19 +227,17 @@ function cellStyle(cell) {
   //Changes tile colour based on how many events are scheduled for that day. 
     
   if(cell.intensity === 0) {
-    return { ...base, backgroundColor: 'var(--color-pop)' }
+    return { ...base, backgroundColor: 'var(--color-ok)' }
   }
   else if(cell.intensity <= 2){
-    return { ...base, backgroundColor: 'color-mix(in srgb, var(--color-ok) 50%, transparent)' }
+    return { ...base, backgroundColor: 'color-mix(in srgb, var(--color-warn) 50%, transparent)' }
   }
   else if(cell.intensity <= 4){
-    return { ...base, backgroundColor: 'color-mix(in srgb, var(--color-warn) 65%, transparent)' }
+    return { ...base, backgroundColor: 'color-mix(in srgb, var(--color-danger) 75%, transparent)' }
   }
-  return { ...base, backgroundColor: 'color-mix(in srgb, var(--color-danger) 85%, transparent)' }
-
 }
 </script>
 
 <script>
-export const widgetMeta = { name: 'Activity Heatmap (PLACEHOLDER)', w: 12, h: 4 }
+export const widgetMeta = { name: 'Activity Heatmap', w: 12, h: 4 }
 </script>
