@@ -77,7 +77,7 @@ const gridStyle = computed(() => {
   if(!cellSize.value.w) return {}
 
   const cols      = COLS.value
-  const gap       = 0
+  const gap       = 5
   const rowWidth  = cols * cellSize.value.w + (cols - 1) * gap
 
   return {
