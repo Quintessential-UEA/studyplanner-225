@@ -3,7 +3,6 @@
 - DEFAULT: Shows the next 5 upcoming events (lectures, tutorials, workshops, etc.) and tasks (assignments, exams, etc.).
 - Must be able to filter by module, or type [show next five tasks, show next five events, show next five deadlines, show next 5 exams]
 -->
-
 <template>
   <div class="h-full flex flex-col pointer-events-auto">
     <div class="flex items-center justify-between mb-2 shrink-0">
@@ -52,13 +51,25 @@ import { ref, computed, onMounted } from 'vue'
 const filter = ref('all')
 const items = ref([])
 
+function authHeaders() {
+  const token = localStorage.getItem('token')
+
+  return {
+    Authorization: `Bearer ${token}`
+  }
+}
+
 onMounted(async () => {
   try {
     const [eventsRes, tasksRes, assessmentsRes] = await Promise.all([
-      fetch('/api/user-events'),
-      fetch('/api/tasks'),
-      fetch('/api/assessments')
+      fetch('/api/user-events', { headers: authHeaders() }),
+      fetch('/api/tasks', { headers: authHeaders() }),
+      fetch('/api/assessments', { headers: authHeaders() })
     ])
+
+    if (!eventsRes.ok || !tasksRes.ok || !assessmentsRes.ok) {
+      throw new Error('Authentication error or failed API request')
+    }
 
     const events = await eventsRes.json()
     const tasks = await tasksRes.json()
@@ -119,6 +130,3 @@ export const widgetMeta = {
   h: 3
 }
 </script>
-
-
-

@@ -53,9 +53,24 @@ const semesterEnd = new Date('2026-05-29')
 
 const timelineItems = ref([])
 
+function authHeaders() {
+  const token = localStorage.getItem('token')
+
+  return {
+    Authorization: `Bearer ${token}`
+  }
+}
+
 onMounted(async () => {
   try {
-    const res = await fetch('/api/assessments')
+    const res = await fetch('/api/assessments', {
+      headers: authHeaders()
+    })
+
+    if (!res.ok) {
+      throw new Error('Authentication error or failed API request')
+    }
+
     const assessments = await res.json()
 
     timelineItems.value = assessments
@@ -63,7 +78,6 @@ onMounted(async () => {
       .map(assessment => {
         const end = new Date(assessment.deadline)
 
-        // Start each bar 21 days before the deadline
         const start = new Date(end)
         start.setDate(start.getDate() - 21)
 
