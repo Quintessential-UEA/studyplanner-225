@@ -1,0 +1,187 @@
+{
+  "file_metadata": {
+    "version": "1.0.0",
+    "generated_at": "2026-01-01T09:00:00Z",
+    "academic_year": "2025-2026",
+    "semester": "2",
+    "file_hash": "template-fixture-base-v1"
+  },
+  "student": {
+    "student_number": "TEMPLATE-0001",
+    "name": {
+      "full_name": "Template Student",
+      "preferred_name": "Template"
+    },
+    "email": "template.student@uea.ac.uk",
+    "school": {
+      "name": "Template School",
+      "acronym": "TPL"
+    },
+    "programme": {
+      "code": "TPL100",
+      "title": "Template Programme"
+    },
+    "year_of_study": 1,
+    "level_of_study": "4",
+    "has_reasonable_adjustments": false,
+    "academic_advisor": {
+      "name": "Dr Template Advisor",
+      "email": "template.advisor@uea.ac.uk",
+      "office": "TPL 1.01"
+    }
+  },
+  "modules": [
+    {
+      "code": "TPL5001A",
+      "title": "Template Module One",
+      "credits": 20,
+      "semester": "2",
+      "level": "4",
+      "description": "Replace this with a real module description.",
+      "module_organiser": {
+        "name": "Dr Template Organiser",
+        "email": "template.organiser@uea.ac.uk",
+        "office": "TPL 2.01",
+        "office_hours": "Mondays 10:00-11:00"
+      },
+      "teaching_staff": [
+        {
+          "name": "Dr Template Organiser",
+          "role": "lecturer",
+          "email": "template.organiser@uea.ac.uk",
+          "responsibilities": "Lectures and support"
+        }
+      ],
+      "assessments": [
+        {
+          "title": "Template Coursework",
+          "module_code": "TPL5001A",
+          "type": "submission",
+          "weighting": 50,
+          "deadline": "2026-03-20T12:00:00Z",
+          "submission_method": "blackboard",
+          "description": "Replace this with a real assessment description.",
+          "word_limit": 2000,
+          "file_types": ["pdf"],
+          "location": "",
+          "suggested_milestones": [
+            {
+              "title": "Draft complete",
+              "suggested_deadline": "2026-03-01",
+              "description": "Complete a first draft.",
+              "completion_percentage": 50
+            }
+          ],
+          "suggested_tasks": [
+            {
+              "title": "Read assessment brief",
+              "type": "reading",
+              "estimated_hours": 1,
+              "description": "Review requirements and marking criteria."
+            }
+          ]
+        },
+        {
+          "title": "Template Exam",
+          "module_code": "TPL5001A",
+          "type": "exam",
+          "weighting": 50,
+          "deadline": "2026-05-20T09:00:00Z",
+          "submission_method": "physical",
+          "description": "Replace this with a real exam description.",
+          "word_limit": 0,
+          "file_types": [],
+          "location": "Template LT",
+          "suggested_milestones": [],
+          "suggested_tasks": [
+            {
+              "title": "Revise key topics",
+              "type": "revision",
+              "estimated_hours": 4,
+              "description": "Review core lecture material."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "title": "Template Lecture",
+          "type": "lecture",
+          "start_time": "2026-01-27T10:00:00Z",
+          "end_time": "2026-01-27T12:00:00Z",
+          "location": "Template LT",
+          "is_recurring": true,
+          "recurrence_pattern": "weekly",
+          "recurrence_end_date": "2026-05-12",
+          "teaching_staff": ["Dr Template Organiser"],
+          "is_mandatory": false,
+          "notes": "Replace with real timetable details."
+        },
+        {
+          "title": "Template Seminar",
+          "type": "seminar",
+          "start_time": "2026-01-29T11:00:00Z",
+          "end_time": "2026-01-29T12:00:00Z",
+          "location": "TPL 0.05",
+          "is_recurring": true,
+          "recurrence_pattern": "weekly",
+          "recurrence_end_date": "2026-05-14",
+          "teaching_staff": ["Dr Template Organiser"],
+          "is_mandatory": false,
+          "notes": "Replace with real seminar details."
+        }
+      ],
+      "resources": {
+        "textbooks": [],
+        "online_resources": [
+          {
+            "title": "Template Blackboard Page",
+            "url": "https://learn.uea.ac.uk/template-module",
+            "description": "Replace with real learning resource links."
+          }
+        ],
+        "blackboard_url": "https://learn.uea.ac.uk/template-module"
+      },
+      "background_information": {
+        "prerequisites": [],
+        "co_requisites": [],
+        "topics_covered": [
+          "Template topic one",
+          "Template topic two"
+        ],
+        "learning_outcomes": [
+          "Replace with real learning outcomes."
+        ],
+        "study_hours": {
+          "lectures": 22,
+          "labs": 0,
+          "independent_study": 178
+        }
+      },
+      "weekly_topics": [
+        {
+          "week": 1,
+          "week_start_date": "2026-01-26",
+          "topic": "Template Week One",
+          "subtopics": [
+            "Template subtopic A",
+            "Template subtopic B"
+          ],
+          "reading": "",
+          "notes": ""
+        },
+        {
+          "week": 2,
+          "week_start_date": "2026-02-02",
+          "topic": "Template Week Two",
+          "subtopics": [
+            "Template subtopic C",
+            "Template subtopic D"
+          ],
+          "reading": "",
+          "notes": ""
+        }
+      ]
+    }
+  ]
+}

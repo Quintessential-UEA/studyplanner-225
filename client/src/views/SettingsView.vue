@@ -94,6 +94,7 @@ import { useThemeStore } from '../stores/theme'
 import { useUserStore } from '../stores/user'
 import { useTaskStore } from '../stores/tasks'
 import { useEventStore } from '../stores/events'
+import { useImportStore } from '../stores/import'
 
 const nav = useNavigationStore()
 const moduleStore = useModuleStore()
@@ -101,6 +102,7 @@ const theme = useThemeStore()
 const userStore = useUserStore()
 const taskStore = useTaskStore()
 const eventStore = useEventStore()
+const importStore = useImportStore()
 
 onMounted(() => {
   if (userStore.isAuthenticated && moduleStore.modules.length === 0) {
@@ -110,6 +112,7 @@ onMounted(() => {
 
 function logout() {
   userStore.logout()
+  importStore.clear()
   eventStore.clear()
 
   moduleStore.modules = []

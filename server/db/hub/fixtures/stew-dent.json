@@ -1,0 +1,520 @@
+{
+  "file_metadata": {
+    "version": "1.0.0",
+    "generated_at": "2026-01-21T08:45:00Z",
+    "academic_year": "2025-2026",
+    "semester": "2",
+    "file_hash": "stew-dent-fixture-v1"
+  },
+  "student": {
+    "student_number": "200000001",
+    "name": {
+      "full_name": "Stew Dent",
+      "preferred_name": "Stew"
+    },
+    "email": "stew.dent@uea.ac.uk",
+    "school": {
+      "name": "School of Economics",
+      "acronym": "ECO"
+    },
+    "programme": {
+      "code": "L100",
+      "title": "BSc (Hons) Economics"
+    },
+    "year_of_study": 2,
+    "level_of_study": "5",
+    "has_reasonable_adjustments": false,
+    "academic_advisor": {
+      "name": "Dr Lauren Mills",
+      "email": "l.mills@uea.ac.uk",
+      "office": "ECO 1.08"
+    }
+  },
+  "modules": [
+    {
+      "code": "ECO5001B",
+      "title": "Microeconomic Analysis",
+      "credits": 20,
+      "semester": "2",
+      "level": "5",
+      "description": "Consumer choice, firm behaviour, market structure, and welfare economics.",
+      "module_organiser": {
+        "name": "Dr Amelia Price",
+        "email": "a.price@uea.ac.uk",
+        "office": "ECO 2.14",
+        "office_hours": "Tuesdays 11:00-12:30"
+      },
+      "teaching_staff": [
+        {
+          "name": "Dr Amelia Price",
+          "role": "lecturer",
+          "email": "a.price@uea.ac.uk",
+          "responsibilities": "Lectures and seminars"
+        }
+      ],
+      "assessments": [
+        {
+          "title": "Problem Set Portfolio",
+          "module_code": "ECO5001B",
+          "type": "submission",
+          "weighting": 40,
+          "deadline": "2026-03-11T12:00:00Z",
+          "submission_method": "blackboard",
+          "description": "Written portfolio of applied microeconomics problem sets.",
+          "word_limit": 2500,
+          "file_types": ["pdf"],
+          "location": "",
+          "suggested_milestones": [
+            {
+              "title": "Complete market theory sections",
+              "suggested_deadline": "2026-02-25",
+              "description": "First half of problem set complete.",
+              "completion_percentage": 55
+            }
+          ],
+          "suggested_tasks": [
+            {
+              "title": "Solve consumer choice exercises",
+              "type": "studying",
+              "estimated_hours": 4,
+              "description": "Work through tutorial questions."
+            }
+          ]
+        },
+        {
+          "title": "Final Exam",
+          "module_code": "ECO5001B",
+          "type": "exam",
+          "weighting": 60,
+          "deadline": "2026-05-26T09:00:00Z",
+          "submission_method": "physical",
+          "description": "Written exam on intermediate microeconomics.",
+          "word_limit": 0,
+          "file_types": [],
+          "location": "Thomas Paine Study Centre",
+          "suggested_milestones": [],
+          "suggested_tasks": [
+            {
+              "title": "Revise market structures",
+              "type": "revision",
+              "estimated_hours": 5,
+              "description": "Focus on oligopoly and monopoly models."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "title": "Microeconomics Lecture",
+          "type": "lecture",
+          "start_time": "2026-01-27T13:00:00Z",
+          "end_time": "2026-01-27T15:00:00Z",
+          "location": "LT2",
+          "is_recurring": true,
+          "recurrence_pattern": "weekly",
+          "recurrence_end_date": "2026-05-12",
+          "teaching_staff": ["Dr Amelia Price"],
+          "is_mandatory": false,
+          "notes": ""
+        },
+        {
+          "title": "Microeconomics Seminar",
+          "type": "seminar",
+          "start_time": "2026-01-29T11:00:00Z",
+          "end_time": "2026-01-29T12:00:00Z",
+          "location": "ECO 0.12",
+          "is_recurring": true,
+          "recurrence_pattern": "weekly",
+          "recurrence_end_date": "2026-05-14",
+          "teaching_staff": ["Dr Amelia Price"],
+          "is_mandatory": false,
+          "notes": "Problem-solving seminar."
+        }
+      ],
+      "resources": {
+        "textbooks": [
+          {
+            "title": "Intermediate Microeconomics",
+            "authors": ["Hal R. Varian"],
+            "edition": "9th",
+            "isbn": "9780393121391",
+            "is_required": true,
+            "library_link": "https://library.uea.ac.uk/intermediate-microeconomics"
+          }
+        ],
+        "online_resources": [
+          {
+            "title": "Module Blackboard Page",
+            "url": "https://learn.uea.ac.uk/eco5001b",
+            "description": "Lecture slides and seminar sheets."
+          }
+        ],
+        "blackboard_url": "https://learn.uea.ac.uk/eco5001b"
+      },
+      "background_information": {
+        "prerequisites": [],
+        "co_requisites": [],
+        "topics_covered": ["Consumer choice", "Production", "Market structures"],
+        "learning_outcomes": [
+          "Apply microeconomic models.",
+          "Interpret market outcomes.",
+          "Solve quantitative economic problems."
+        ],
+        "study_hours": {
+          "lectures": 22,
+          "labs": 0,
+          "independent_study": 178
+        }
+      },
+      "weekly_topics": [
+        {
+          "week": 1,
+          "week_start_date": "2026-01-26",
+          "topic": "Consumer Choice",
+          "subtopics": ["Preferences", "Budget constraints", "Utility"],
+          "reading": "",
+          "notes": ""
+        },
+        {
+          "week": 2,
+          "week_start_date": "2026-02-02",
+          "topic": "Production and Costs",
+          "subtopics": ["Short run", "Long run", "Cost curves"],
+          "reading": "",
+          "notes": ""
+        },
+        {
+          "week": 3,
+          "week_start_date": "2026-02-09",
+          "topic": "Perfect Competition and Monopoly",
+          "subtopics": ["Market power", "Equilibrium", "Welfare"],
+          "reading": "",
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "code": "ECO5003B",
+      "title": "Econometrics",
+      "credits": 20,
+      "semester": "2",
+      "level": "5",
+      "description": "Regression analysis, hypothesis testing, model specification, and applied quantitative economics.",
+      "module_organiser": {
+        "name": "Dr Benjamin Cole",
+        "email": "b.cole@uea.ac.uk",
+        "office": "ECO 1.16",
+        "office_hours": "Mondays 14:00-15:30"
+      },
+      "teaching_staff": [
+        {
+          "name": "Dr Benjamin Cole",
+          "role": "lecturer",
+          "email": "b.cole@uea.ac.uk",
+          "responsibilities": "Lectures and workshops"
+        }
+      ],
+      "assessments": [
+        {
+          "title": "Regression Coursework",
+          "module_code": "ECO5003B",
+          "type": "submission",
+          "weighting": 50,
+          "deadline": "2026-03-25T23:59:00Z",
+          "submission_method": "blackboard",
+          "description": "Applied data analysis coursework using real datasets.",
+          "word_limit": 2000,
+          "file_types": ["pdf", "xlsx"],
+          "location": "",
+          "suggested_milestones": [],
+          "suggested_tasks": [
+            {
+              "title": "Clean dataset",
+              "type": "other",
+              "estimated_hours": 3,
+              "description": "Prepare variables for analysis."
+            },
+            {
+              "title": "Run regression models",
+              "type": "studying",
+              "estimated_hours": 4,
+              "description": "Compare and interpret model outputs."
+            }
+          ]
+        },
+        {
+          "title": "Written Exam",
+          "module_code": "ECO5003B",
+          "type": "exam",
+          "weighting": 50,
+          "deadline": "2026-05-23T13:00:00Z",
+          "submission_method": "physical",
+          "description": "Exam on econometric theory and interpretation.",
+          "word_limit": 0,
+          "file_types": [],
+          "location": "Blackdale LT",
+          "suggested_milestones": [],
+          "suggested_tasks": [
+            {
+              "title": "Revise hypothesis testing",
+              "type": "revision",
+              "estimated_hours": 4,
+              "description": "Review confidence intervals and significance testing."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "title": "Econometrics Lecture",
+          "type": "lecture",
+          "start_time": "2026-01-28T09:00:00Z",
+          "end_time": "2026-01-28T11:00:00Z",
+          "location": "LT3",
+          "is_recurring": true,
+          "recurrence_pattern": "weekly",
+          "recurrence_end_date": "2026-05-13",
+          "teaching_staff": ["Dr Benjamin Cole"],
+          "is_mandatory": false,
+          "notes": ""
+        },
+        {
+          "title": "Econometrics Workshop",
+          "type": "workshop",
+          "start_time": "2026-01-30T10:00:00Z",
+          "end_time": "2026-01-30T11:00:00Z",
+          "location": "ECO Lab 1",
+          "is_recurring": true,
+          "recurrence_pattern": "weekly",
+          "recurrence_end_date": "2026-05-15",
+          "teaching_staff": ["Dr Benjamin Cole"],
+          "is_mandatory": false,
+          "notes": "Data and software workshop."
+        }
+      ],
+      "resources": {
+        "textbooks": [
+          {
+            "title": "Introductory Econometrics",
+            "authors": ["Jeffrey Wooldridge"],
+            "edition": "7th",
+            "isbn": "9781337558860",
+            "is_required": true,
+            "library_link": "https://library.uea.ac.uk/introductory-econometrics"
+          }
+        ],
+        "online_resources": [
+          {
+            "title": "Module Blackboard Page",
+            "url": "https://learn.uea.ac.uk/eco5003b",
+            "description": "Lecture materials and datasets."
+          }
+        ],
+        "blackboard_url": "https://learn.uea.ac.uk/eco5003b"
+      },
+      "background_information": {
+        "prerequisites": [],
+        "co_requisites": [],
+        "topics_covered": ["OLS", "Inference", "Specification", "Diagnostics"],
+        "learning_outcomes": [
+          "Interpret econometric outputs.",
+          "Apply regression methods.",
+          "Critique empirical models."
+        ],
+        "study_hours": {
+          "lectures": 22,
+          "labs": 0,
+          "independent_study": 178
+        }
+      },
+      "weekly_topics": [
+        {
+          "week": 1,
+          "week_start_date": "2026-01-26",
+          "topic": "Simple Regression",
+          "subtopics": ["Model setup", "Estimation", "Interpretation"],
+          "reading": "",
+          "notes": ""
+        },
+        {
+          "week": 2,
+          "week_start_date": "2026-02-02",
+          "topic": "Inference and Testing",
+          "subtopics": ["t-tests", "p-values", "Confidence intervals"],
+          "reading": "",
+          "notes": ""
+        },
+        {
+          "week": 3,
+          "week_start_date": "2026-02-09",
+          "topic": "Multiple Regression",
+          "subtopics": ["Controls", "Omitted variables", "Diagnostics"],
+          "reading": "",
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "code": "ECO5010B",
+      "title": "International Trade",
+      "credits": 20,
+      "semester": "2",
+      "level": "5",
+      "description": "Trade theories, comparative advantage, policy, and global economic integration.",
+      "module_organiser": {
+        "name": "Dr Sophie Grant",
+        "email": "s.grant@uea.ac.uk",
+        "office": "ECO 2.03",
+        "office_hours": "Fridays 10:00-11:30"
+      },
+      "teaching_staff": [
+        {
+          "name": "Dr Sophie Grant",
+          "role": "lecturer",
+          "email": "s.grant@uea.ac.uk",
+          "responsibilities": "Lectures and seminars"
+        }
+      ],
+      "assessments": [
+        {
+          "title": "Trade Policy Essay",
+          "module_code": "ECO5010B",
+          "type": "submission",
+          "weighting": 50,
+          "deadline": "2026-03-30T12:00:00Z",
+          "submission_method": "blackboard",
+          "description": "Essay evaluating a current international trade issue.",
+          "word_limit": 2500,
+          "file_types": ["pdf"],
+          "location": "",
+          "suggested_milestones": [
+            {
+              "title": "Essay plan complete",
+              "suggested_deadline": "2026-03-10",
+              "description": "Question refined and sources selected.",
+              "completion_percentage": 40
+            }
+          ],
+          "suggested_tasks": [
+            {
+              "title": "Review journal articles",
+              "type": "reading",
+              "estimated_hours": 4,
+              "description": "Gather supporting evidence for the essay."
+            }
+          ]
+        },
+        {
+          "title": "Summer Exam",
+          "module_code": "ECO5010B",
+          "type": "exam",
+          "weighting": 50,
+          "deadline": "2026-05-27T09:00:00Z",
+          "submission_method": "physical",
+          "description": "Final exam on trade models and policy.",
+          "word_limit": 0,
+          "file_types": [],
+          "location": "Bob Champion LT",
+          "suggested_milestones": [],
+          "suggested_tasks": [
+            {
+              "title": "Revise trade models",
+              "type": "revision",
+              "estimated_hours": 5,
+              "description": "Compare classical and modern trade theory."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "title": "International Trade Lecture",
+          "type": "lecture",
+          "start_time": "2026-01-26T16:00:00Z",
+          "end_time": "2026-01-26T18:00:00Z",
+          "location": "LT1",
+          "is_recurring": true,
+          "recurrence_pattern": "weekly",
+          "recurrence_end_date": "2026-05-11",
+          "teaching_staff": ["Dr Sophie Grant"],
+          "is_mandatory": false,
+          "notes": ""
+        },
+        {
+          "title": "International Trade Seminar",
+          "type": "seminar",
+          "start_time": "2026-01-28T14:00:00Z",
+          "end_time": "2026-01-28T15:00:00Z",
+          "location": "ECO 0.05",
+          "is_recurring": true,
+          "recurrence_pattern": "weekly",
+          "recurrence_end_date": "2026-05-13",
+          "teaching_staff": ["Dr Sophie Grant"],
+          "is_mandatory": false,
+          "notes": "Discussion-based seminar."
+        }
+      ],
+      "resources": {
+        "textbooks": [
+          {
+            "title": "International Economics",
+            "authors": ["Paul Krugman", "Maurice Obstfeld", "Marc Melitz"],
+            "edition": "12th",
+            "isbn": "9781292409719",
+            "is_required": false,
+            "library_link": "https://library.uea.ac.uk/international-economics"
+          }
+        ],
+        "online_resources": [
+          {
+            "title": "Module Blackboard Page",
+            "url": "https://learn.uea.ac.uk/eco5010b",
+            "description": "Seminar reading and lecture notes."
+          }
+        ],
+        "blackboard_url": "https://learn.uea.ac.uk/eco5010b"
+      },
+      "background_information": {
+        "prerequisites": [],
+        "co_requisites": [],
+        "topics_covered": ["Comparative advantage", "Tariffs", "Trade policy", "Globalisation"],
+        "learning_outcomes": [
+          "Explain major trade theories.",
+          "Evaluate trade policy decisions.",
+          "Apply economic reasoning to global markets."
+        ],
+        "study_hours": {
+          "lectures": 22,
+          "labs": 0,
+          "independent_study": 178
+        }
+      },
+      "weekly_topics": [
+        {
+          "week": 1,
+          "week_start_date": "2026-01-26",
+          "topic": "Comparative Advantage",
+          "subtopics": ["Ricardo", "Opportunity cost", "Gains from trade"],
+          "reading": "",
+          "notes": ""
+        },
+        {
+          "week": 2,
+          "week_start_date": "2026-02-02",
+          "topic": "Heckscher-Ohlin and Trade Patterns",
+          "subtopics": ["Factor endowments", "Specialisation", "Winners and losers"],
+          "reading": "",
+          "notes": ""
+        },
+        {
+          "week": 3,
+          "week_start_date": "2026-02-09",
+          "topic": "Trade Policy",
+          "subtopics": ["Tariffs", "Quotas", "Welfare effects"],
+          "reading": "",
+          "notes": ""
+        }
+      ]
+    }
+  ]
+}

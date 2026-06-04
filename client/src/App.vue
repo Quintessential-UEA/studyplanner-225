@@ -1,14 +1,13 @@
-// client/src/App.vue
 <template>
   <div
     v-if="appReady"
     id="app-root"
     class="min-h-screen bg-canvas text-body font-sans overflow-x-hidden flex"
   >
-    <NavBar v-if="nav.currentView !== 'Login'" />
+    <NavBar v-if="showSidebar" />
 
     <div
-      v-if="nav.currentView !== 'Login'"
+      v-if="showSidebar"
       class="h-screen transition-all duration-300 ease-in-out shrink-0"
       :class="nav.isExpanded ? 'w-64' : 'w-20'"
     ></div>
@@ -30,6 +29,7 @@ import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
 import { useNavigationStore } from './stores/navigation'
 import { useThemeStore } from './stores/theme'
 import { useUserStore } from './stores/user'
+import { useImportStore } from './stores/import'
 
 import NavBar from './components/NavBar.vue'
 
@@ -40,6 +40,7 @@ import SemesterView from './views/SemesterView.vue'
 import ModuleView from './views/ModuleView.vue'
 import CalendarView from './views/CalendarView.vue'
 import TaskInboxView from './views/TaskInboxView.vue'
+import ImportHubView from './views/ImportHubView.vue'
 
 const views = {
   Login: LoginView,
@@ -49,16 +50,22 @@ const views = {
   Module: ModuleView,
   Calendar: CalendarView,
   TaskInbox: TaskInboxView,
+  ImportHub: ImportHubView,
 }
 
 const nav = useNavigationStore()
 const userStore = useUserStore()
+const importStore = useImportStore()
 useThemeStore()
 
 const appReady = ref(false)
 
 const activeComponent = computed(() => {
   return views[nav.currentView] || LoginView
+})
+
+const showSidebar = computed(() => {
+  return !['Login', 'ImportHub'].includes(nav.currentView)
 })
 
 const transitionName = computed(() => {
@@ -68,6 +75,7 @@ const transitionName = computed(() => {
 
 function handleUnauthorized() {
   userStore.clearSession()
+  importStore.clear()
   nav.navigate('Login', 'backward')
 }
 
@@ -76,12 +84,25 @@ onMounted(async () => {
 
   const hasSession = await userStore.bootstrapSession()
 
-  if (hasSession) {
-    if (nav.currentView === 'Login') {
-      nav.navigate('Dashboard', 'forward')
-    }
-  } else {
+  if (!hasSession) {
     nav.navigate('Login', 'backward')
+    appReady.value = true
+    return
+  }
+
+  try {
+    const status = await importStore.fetchStatus()
+
+    if (status.hasImportedData) {
+      if (nav.currentView === 'Login' || nav.currentView === 'ImportHub') {
+        nav.navigate('Dashboard', 'forward')
+      }
+    } else {
+      nav.navigate('ImportHub', 'forward')
+    }
+  } catch (err) {
+    console.error('Failed to fetch import status during bootstrap:', err)
+    nav.navigate('Dashboard', 'forward')
   }
 
   appReady.value = true
