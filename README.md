@@ -76,7 +76,6 @@ cp .env.example .env
 # Once migrate.js and seed.js are completed (WIP):
 cd server
 node db/migrate.js   # Creates all tables in a fresh SQLite database file
-node db/seed.js      # Populates it with sample users, modules, tasks, etc.
 ```
 
 > WARNING: These scripts are scaffolded but not yet functional. They will be completed once the ERD is finalised.
@@ -111,6 +110,30 @@ npm run dev
 ```
 
 > Opens the app on `http://localhost:5173`. API calls to `/api/*` are automatically forwarded to the backend on port 3000 (configured in `vite.config.js`).
+
+---
+
+## Logging In
+
+### Email Address
+
+> Stew.Dent@uea.ac.uk
+
+### Hub File Submission
+
+```bash
+# Only accepts .json file type.
+```
+
+> Navigate to server/db/hub/Stew-Dent.json
+
+```bash
+cd server/db/hub/Stew-Dent.json
+```
+
+> Alternatively, select "Browse..." and manually select the .json for Stew Dent.  
+> After selecting the relevant .json it the login screen will display which file has been selected for import. 
+>Click "Upload and import".
 
 ---
 
