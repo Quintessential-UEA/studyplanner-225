@@ -121,7 +121,6 @@
                 <span class="material-symbols-outlined text-accent-text text-[20px]">overview</span>
                 Module Planning Summary
               </h2>
-
               <div class="grid grid-cols-2 gap-3">
                 <div class="bg-pop rounded-xl p-4 border border-edge">
                   <p class="text-[11px] uppercase tracking-wider text-ghost font-bold mb-1">Tasks</p>
@@ -211,9 +210,15 @@ const theme = useThemeStore()
 const mod = computed(() => moduleStore.activeModuleDetail)
 
 watch(
-  mod,
-  (m) => {
+  mod, async (m) => {
+    if(!m) return
     theme.setAccent(m?.theme_color || null)
+    try{
+    const result = await taskStore.fetchMilestones()
+    console.log('MileStone Result: ', result)
+    }catch(err){
+    console.log('milestones fetch error: ', err)
+    }
   },
   { immediate: true }
 )

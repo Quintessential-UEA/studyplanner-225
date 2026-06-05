@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-card rounded-2xl shadow-sm border border-edge overflow-hidden relative p-5 flex flex-col">
+  <div class="bg-card rounded-2xl shadow-sm border border-edge relative p-5 flex flex-col">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-base font-bold text-body flex items-center gap-2">
         <span class="material-symbols-outlined text-ok text-[20px]">analytics</span>
@@ -27,7 +27,7 @@
         <span class="text-xs font-bold text-ok uppercase tracking-wider">Completed</span>
       </div>
       <div class="bg-warn-soft rounded-xl p-4 flex flex-col justify-center border border-warn-border">
-        <span class="text-3xl font-extrabold text-warn-text mb-1">0</span>
+        <span class="text-3xl font-extrabold text-warn-text mb-1">{{ overdueCount }}</span>
         <span class="text-xs font-bold text-warn uppercase tracking-wider">Overdue</span>
       </div>
     </div>
@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 // Pinia stores (defined in src/stores/) are the shared state layer. any
 // component that calls useTaskStore() gets the same instance:task data
 // is never duplicated across widgets.
@@ -48,6 +48,17 @@ const taskStore = useTaskStore()
 onMounted(async () => {
   if (!taskStore.tasks.length) await taskStore.fetchTasks()
 })
+
+
+const overdueCount = computed(() => {
+  const now = new Date()
+  return taskStore.tasks.filter(t =>
+    t.satus !== 'completed' &&
+    t.due_date &&
+    new Date(t.due_date) < now
+  ).length
+})
+
 </script>
 
 <script>
