@@ -63,6 +63,7 @@ db.exec(`
   DROP TABLE IF EXISTS module_organisers;
   DROP TABLE IF EXISTS student_profiles;
   DROP TABLE IF EXISTS users;
+  DROP TABLE IF EXISTS task_dependencies;
 `)
 
 // Create tables
@@ -223,14 +224,24 @@ db.exec(`
     scheduled_duration   INTEGER DEFAULT 60
   );
 
+  CREATE TABLE task_dependencies (
+    id                 INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id            INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    task_id            INTEGER NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+    depends_on_task_id INTEGER NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+    CHECK (task_id != depends_on_task_id),
+    UNIQUE (user_id, task_id, depends_on_task_id)
+  );
+
   CREATE TABLE activities (
-    id               INTEGER PRIMARY KEY AUTOINCREMENT,
-    task_id          INTEGER REFERENCES tasks(id) ON DELETE CASCADE,
-    user_id          INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    date             TEXT NOT NULL,
-    metric           TEXT NOT NULL,
-    amount           REAL NOT NULL,
-    description      TEXT
+    id                 INTEGER PRIMARY KEY AUTOINCREMENT,
+    task_id            INTEGER REFERENCES tasks(id) ON DELETE CASCADE,
+    user_id            INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    date               TEXT NOT NULL,
+    metric             TEXT NOT NULL,
+    amount             REAL NOT NULL,
+    time_spent_minutes INTEGER NOT NULL DEFAULT 0,
+    description        TEXT
   );
 
   CREATE TABLE user_events (
