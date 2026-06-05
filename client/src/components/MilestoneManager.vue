@@ -37,15 +37,24 @@
             :key="milestone.id"
             class="bg-card rounded-lg border border-edge px-3 py-3 flex items-start justify-between gap-3"
           >
-            <div class="min-w-0">
-              <p class="text-sm font-semibold text-body">
-                {{ milestone.title }}
-              </p>
-              <p class="text-[11px] text-ghost mt-1">
-                {{ milestone.target_date ? formatDate(milestone.target_date) : 'No target date' }}
+           <div class="min-w-0">
+            <p class="text-sm font-semibold text-body">{{ milestone.title }}</p>
+            <p class="text-[11px] text-ghost mt-1">
+              {{ milestone.target_date ? formatDate(milestone.target_date) : 'No target date' }}
+            </p>
+            <div v-if="tasksForMilestone(milestone.id).length" class="mt-2">
+              <div class="h-1.5 rounded-full bg-pop overflow-hidden">
+                <div
+                  class="h-full rounded-full bg-accent transition-all duration-300"
+                  :style="{ width: `${milestoneProgress(milestone.id).percent}%` }"
+                ></div>
+              </div>
+              <p class="text-[11px] text-ghost mt-1 font-medium">
+                {{ milestoneProgress(milestone.id).completed }}/{{ milestoneProgress(milestone.id).total }} tasks completed
               </p>
             </div>
-
+            <div v-else class="text-[11px] text-dim mt-1">No tasks linked yet</div>
+          </div>
             <div class="flex items-center gap-1 shrink-0">
               <button
                 @click="openEditModal(milestone)"
@@ -187,6 +196,21 @@ const form = reactive({
   title: '',
   target_date: '',
 })
+
+function tasksForMilestone(milestoneId){
+  return taskStore.tasks.filter(t => t.milestone_id === milestoneId)
+}
+
+function milestoneProgress(milestoneId){
+  const tasks = tasksForMilestone(milestoneId)
+  console.log('milestone tasks: ', tasks)
+  console.log('activities: ', taskStore.activities)
+  if(!tasks.length) return []
+  const completed = tasks.filter(t => t.status === 'completed').length
+  console.log('completed: ', completed, 'total: ', tasks.length)
+  return { completed, total: tasks.length, percent: Math.round((completed / tasks.length) * 100) }
+}
+
 
 const activeModule = computed(() => {
   if (moduleStore.activeModuleDetail?.code === props.moduleCode) {

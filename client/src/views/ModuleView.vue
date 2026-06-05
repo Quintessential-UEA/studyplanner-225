@@ -160,7 +160,7 @@
             </div>
 
             <div class="bg-card rounded-2xl shadow-sm border border-edge p-5 flex flex-col h-56 shrink-0">
-              <HeatmapWidget title="Module Activity" colorScheme="accent" />
+              <HeatmapWidget :data="moduleEvents" title="Module Activity" colorScheme="accent" />
             </div>
           </div>
 
@@ -290,6 +290,19 @@ const moduleTaskStats = computed(() => {
     completed,
     upcoming,
   }
+})
+
+const moduleEvents = computed(() => {
+  if(!mod.value) return[]
+
+  const modCode = mod.value.code
+  const events  = eventStore.events.filter(e => e.module_code === modCode)
+  const tasks   = taskStore.tasks
+    .filter(t => t.module_code === modCode && t.due_date)
+    .map(t => ({...t, start_time: t.due_date}))
+
+  return [...events, ...tasks]
+
 })
 
 const hotbarData = computed(() => {

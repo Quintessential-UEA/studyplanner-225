@@ -5,6 +5,7 @@
       <!-- `slot` is a placeholder where the parent can inject extra markup.
            Named slots (name="actions") let a parent add buttons to the header
            without this component needing to know about them. -->
+      <span v-if="!(localViewMode === 'day' || colorScheme === 'accent')"class="text-sm flex-1 text-center" style="margin-left: -7rem">Today</span>     
       <slot name="actions"></slot>
       <div class="flex gap-2 text-sm">
         <button @click="setViewMode('day')" :class="{ 'font-bold': localViewMode === 'day' }">Day</button>
@@ -18,10 +19,8 @@
        class="rounded-[1px] transition-all duration-200 cursor-pointer hover:scale-110 hover:shadow-sm"
        :style="cellStyle(cell)"
        :title="`Value: ${cell.intensity}`"
-      >
-      <span v-if="!(colorScheme === 'accent' && localViewMode === 'day')" class="text-[20px] border-10px font-medium select-none" style="color: var(--color-body)">
-        {{ cell.label }}
-      </span>
+      >  
+      <div v-if="cell.isToday" style="width:8px;height:8px;border-radius:50%;background:white;opacity:1;"></div>
       </div>
     </div>
   </div>  
@@ -116,6 +115,11 @@ function setViewMode(mode){
 
 
 const resolvedData = computed(() => {
+  if(props.data && props.data.length > 0){
+    return props.data
+  }
+  
+
   const storeEvents = eventStore.events
 
   const storeTasks = taskStore.tasks
@@ -197,7 +201,7 @@ const cellDisplay = computed(() => {
         return d.toDateString() === now.toDateString() && d.getHours() === h
       }).length
       const label = h === 0 ? '12:00 am' : h < 12 ? `${h}:00 am` : h === 12 ?'12:00 pm' : `${h - 12}:00 pm`
-      return { label, intensity: count }
+      return { label, intensity: count, isToday: h === now.getHours() }
     })
   }
   return result
