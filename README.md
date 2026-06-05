@@ -125,9 +125,9 @@ npm run dev
 ### Hub File Submission
 
 ```bash
+# Only accepts .json file type.
 > Navigate to server/db/hub/Stew-Dent.json
 cd server/db/hub/Stew-Dent.json
-# Only accepts .json file type.
 ```
 
 
