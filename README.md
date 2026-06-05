@@ -119,14 +119,15 @@ npm run dev
 
 ```bash
 # This is the prototype user.
-> Stew.Dent@uea.ac.uk
+Email : Stew.Dent@uea.ac.uk
 ```
 
 ### Hub File Submission
 
+> Navigate to server/db/hub/Stew-Dent.json
+
 ```bash
 # Only accepts .json file type.
-> Navigate to server/db/hub/Stew-Dent.json
 cd server/db/hub/Stew-Dent.json
 ```
 
