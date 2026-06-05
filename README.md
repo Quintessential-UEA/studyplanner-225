@@ -117,22 +117,24 @@ npm run dev
 
 ### Email Address
 
+```bash
+# This is the prototype user.
 > Stew.Dent@uea.ac.uk
+```
 
 ### Hub File Submission
 
 ```bash
+> Navigate to server/db/hub/Stew-Dent.json
+cd server/db/hub/Stew-Dent.json
 # Only accepts .json file type.
 ```
 
-> Navigate to server/db/hub/Stew-Dent.json
-
-```bash
-cd server/db/hub/Stew-Dent.json
-```
 
 > Alternatively, select "Browse..." and manually select the .json for Stew Dent.  
-> After selecting the relevant .json it the login screen will display which file has been selected for import. 
+
+> After selecting the relevant .json it the login screen will display which file has been selected for import.
+
 >Click "Upload and import".
 
 ---
