@@ -103,8 +103,9 @@ let grid = null
 
 const defaultLayout = [
   { id: 'widget-1', type: 'HeatmapWidget',   x: 0, y: 0, w: 12, h: 4 },
-  { id: 'widget-2', type: 'TaskStatsWidget',  x: 0, y: 4, w: 4,  h: 3 },
-  { id: 'widget-3', type: 'GradesWidget',     x: 4, y: 4, w: 8,  h: 4 },
+  { id: 'widget-2', type: 'TaskStatsWidget', x: 0, y: 4, w: 4,  h: 3 },
+  { id: 'widget-3', type: 'GradesWidget',    x: 4, y: 4, w: 8,  h: 4 },
+  { id: 'widget-4', type: 'GanttWidget',     x: 0, y: 8, w: 12, h: 5 },
 ]
 
 const layout = ref(JSON.parse(localStorage.getItem('dashboardLayoutArray')) || defaultLayout)

@@ -9,6 +9,7 @@ import userRoutes from './user.js'
 import userEventRoutes from './user_events.js'
 import calendarRoutes from './calendar.js'
 import importRoutes from './import.js'
+import ganttRoutes from './gantt.js'
 
 const router = express.Router()
 
@@ -25,5 +26,6 @@ router.use('/user', userRoutes)
 router.use('/user-events', userEventRoutes)
 router.use('/calendar', calendarRoutes)
 router.use('/import', importRoutes)
+router.use('/gantt', ganttRoutes)
 
 export default router

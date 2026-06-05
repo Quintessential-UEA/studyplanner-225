@@ -124,57 +124,33 @@
 
               <div class="grid grid-cols-2 gap-3">
                 <div class="bg-pop rounded-xl p-4 border border-edge">
-                  <p class="text-[11px] uppercase tracking-wider text-ghost font-bold mb-1">
-                    Tasks
-                  </p>
-                  <p class="text-2xl font-extrabold text-body">
-                    {{ moduleTaskStats.total }}
-                  </p>
+                  <p class="text-[11px] uppercase tracking-wider text-ghost font-bold mb-1">Tasks</p>
+                  <p class="text-2xl font-extrabold text-body">{{ moduleTaskStats.total }}</p>
                 </div>
 
                 <div class="bg-pop rounded-xl p-4 border border-edge">
-                  <p class="text-[11px] uppercase tracking-wider text-ghost font-bold mb-1">
-                    Completed
-                  </p>
-                  <p class="text-2xl font-extrabold text-body">
-                    {{ moduleTaskStats.completed }}
-                  </p>
+                  <p class="text-[11px] uppercase tracking-wider text-ghost font-bold mb-1">Completed</p>
+                  <p class="text-2xl font-extrabold text-body">{{ moduleTaskStats.completed }}</p>
                 </div>
 
                 <div class="bg-pop rounded-xl p-4 border border-edge">
-                  <p class="text-[11px] uppercase tracking-wider text-ghost font-bold mb-1">
-                    Milestones
-                  </p>
-                  <p class="text-2xl font-extrabold text-body">
-                    {{ moduleMilestones.length }}
-                  </p>
+                  <p class="text-[11px] uppercase tracking-wider text-ghost font-bold mb-1">Milestones</p>
+                  <p class="text-2xl font-extrabold text-body">{{ moduleMilestones.length }}</p>
                 </div>
 
                 <div class="bg-pop rounded-xl p-4 border border-edge">
-                  <p class="text-[11px] uppercase tracking-wider text-ghost font-bold mb-1">
-                    Dependencies
-                  </p>
-                  <p class="text-2xl font-extrabold text-body">
-                    {{ moduleDependencyCount }}
-                  </p>
+                  <p class="text-[11px] uppercase tracking-wider text-ghost font-bold mb-1">Dependencies</p>
+                  <p class="text-2xl font-extrabold text-body">{{ moduleDependencyCount }}</p>
                 </div>
 
                 <div class="bg-pop rounded-xl p-4 border border-edge">
-                  <p class="text-[11px] uppercase tracking-wider text-ghost font-bold mb-1">
-                    Activities
-                  </p>
-                  <p class="text-2xl font-extrabold text-body">
-                    {{ moduleActivityCount }}
-                  </p>
+                  <p class="text-[11px] uppercase tracking-wider text-ghost font-bold mb-1">Activities</p>
+                  <p class="text-2xl font-extrabold text-body">{{ moduleActivityCount }}</p>
                 </div>
 
                 <div class="bg-pop rounded-xl p-4 border border-edge">
-                  <p class="text-[11px] uppercase tracking-wider text-ghost font-bold mb-1">
-                    Upcoming
-                  </p>
-                  <p class="text-2xl font-extrabold text-body">
-                    {{ moduleTaskStats.upcoming }}
-                  </p>
+                  <p class="text-[11px] uppercase tracking-wider text-ghost font-bold mb-1">Upcoming</p>
+                  <p class="text-2xl font-extrabold text-body">{{ moduleTaskStats.upcoming }}</p>
                 </div>
               </div>
             </div>
@@ -186,9 +162,21 @@
             <div class="bg-card rounded-2xl shadow-sm border border-edge p-5 flex flex-col h-56 shrink-0">
               <HeatmapWidget title="Module Activity" colorScheme="accent" />
             </div>
+          </div>
 
-            <div class="bg-card rounded-2xl shadow-sm border border-edge p-5 flex flex-col h-56 shrink-0">
-              <GanttWidget />
+          <div class="lg:col-span-12">
+            <div class="bg-card rounded-2xl shadow-sm border border-edge p-5 min-h-[500px]">
+              <h2 class="text-base font-bold text-body mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-accent-text text-[20px]">
+                  timeline
+                </span>
+                Module Timeline
+              </h2>
+
+              <GanttWidget
+                :user-id="1"
+                :module-code="mod.code"
+              />
             </div>
           </div>
         </div>
